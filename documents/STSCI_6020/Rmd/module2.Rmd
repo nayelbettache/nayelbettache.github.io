@@ -1,0 +1,130 @@
+---
+title: "Module 2 Assessment"
+author: ''
+date: "2/12/2024"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Logistics
+* Due Feb 20 at 11:59pm
+* Please submit both a pdf and .Rmd file to canvas
+
+# Salaries data
+
+We will be using the "Salaries" dataset from "An R Companion to Applied Regression" by Fox and Weisberg (2019). It can be loaded into \texttt{R} using the \texttt{carData} package as shown below. The dataset has the 2008-2009 salaries from 397 faculty members at a college in the US.  
+
+```{r, message = F}
+# Install the package carData if you don't already have it using the code below
+# install.packages("carData")
+```
+
+```{r}
+# load the package
+library("carData")
+
+# load the dataset. Running this should result in a variable named Salaries
+# being created. Note that R is case sensitive
+data(Salaries)
+
+head(Salaries)
+
+# The ? command opens the documentation for the dataset
+
+?Salaries
+
+```
+
+In the following questions, fit the model which most directly answers the question of interest; i.e., don't take transformations or add additional covariates unless they directly address the question. In many cases, the model you fit will clearly violate some of the assumptions we've discussed in class. For now, just ignore those violations and simply report the estimates.
+
+# Question 1 (2pts)
+Suppose I am interested in knowing the expected difference in salary between two individuals who differ by 1 year in years since phd. Using the \texttt{lm} function, write out the code for the model that directly estimates that quantity. Write one sentence to interpret your finding to a collaborator. 
+
+## Answer
+```{r}
+
+```
+
+# Question 2 (2pts)
+Suppose I am interested in knowing the expected difference in salary between two individuals who differ by 1 year in years since phd, but are the same rank and discipline. Using the \texttt{lm} function, write out the code for the model that directly estimates that quantity. Write one sentence to interpret your finding to a collaborator. 
+
+## Answer
+```{r}
+
+```
+
+
+# Question 3 (2pts)
+Suppose I am interested in knowing the \% difference in expected salary between two individuals who differ by 1 year in years since phd. Using the \texttt{lm} function, write out the code for the model that directly estimates that quantity. Write one sentence to interpret your finding to a collaborator. 
+
+## Answer
+
+```{r}
+
+
+```
+
+# Question 4 (2pts)
+Suppose I am interested in knowing the \% difference in expected salary between two individuals who differ by 1 year in years since phd, but are in the same discipline. Using the \texttt{lm} function, write out the code for the model that directly estimates that quantity. Write one sentence to interpret your finding to a collaborator. 
+
+## Answer
+```{r}
+
+```
+
+
+# Question 5 (2pts)
+Write a short explanation which interprets the results of model below to a collaborator. 
+```{r}
+summary(lm(salary ~ relevel(rank, ref = "AssocProf"), data = Salaries))
+
+```
+
+## Answer
+
+
+# Question 6 (3pts)
+I think the association of years since phd and salary is different in discipline A than the association in discipline B. Fit a model which would allow the associations to differ. What is the estimate of the expected difference in salary between two individuals who differ by 1 year in years since phd and are both in discipline A? What is the estimate of the expected difference in salary between two individuals who differ by 1 year in years since phd and are both in discipline B?
+
+## Answer
+```{r}
+
+```
+
+
+
+
+# Question 7 (8pts)
+The following data records data across 55 mammals. It is available in the R package \texttt{mice}, but I've taken out some species with missing data and only have a subset of the original variables. In particular, we have:
+
+* species: Species of animal
+* gt: gestational time
+* bw: body weight (kg)
+* brw: brain weight (g)
+
+Suppose we want to fit a model which explores the relationship between the dependent variable gestational time (gt) and the covariates body weight (bw) and brain weight (brw). Choose an appropriate model to fit by considering potential transformations of the data(it doesn't have to be perfect, but it shouldn't be terrible either). Using various plots, explain why the model you choose is appropriate and discuss whether the linear model assumptions hold. For simplicity, don't consider models with interactions.
+```{r}
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lab3/mammal_data.csv"
+mammals <- read.csv(fileName)
+```
+
+
+### Answer
+```{r}
+
+```
+
+
+
+# Question 8 (4pts)
+Give an interpretation of the estimated coefficients for covariates corresponding to body weight and brain weight.  
+
+### Answer
+
+
+

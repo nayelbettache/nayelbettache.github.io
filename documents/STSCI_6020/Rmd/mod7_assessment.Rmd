@@ -1,0 +1,68 @@
+---
+title: "Module 7 Assessment"
+author: ""
+date: ""
+output: pdf_document
+header-includes: 
+  - \usepackage{tikz}
+  - \usepackage{pgfplots}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# Instructions
+Please submit the markdown file **and compiled pdf** to canvas before May 15 at 11:59pm. For this assignment, you can discuss with classmates, but please at least attempt to go through it individually first so that you can see what you understand or don't understand. Ultimately, the final product you turn in should be your own work. So you can discuss questions with classmates, but your answers should be written in your own words. Because I need to post the key before the exam, there will be no extensions on the deadline!   
+
+# Clearly
+We will examine the causal claims of the paper "Sex Bias in Graduate Admissions: Data from Berkeley" by Bickel, Hammel, and O'Connell (1975, Science 1975) and a subsequent criticism from "What Is Your Estimand? Defining the Target Quantity Connects Statistical Evidence to Theory" by Lundberg, Johnson, and Stewart (American Sociological Review, 2021). The original authors frame the discussion with respect to sex, but we will instead consider gender to better reflect the complexity of our world. In addition, the statistics reported by Bickel, Hammel, and O'Connell only include men and women, and fail to account for applicants who do not fall into one of those two categories. Nonetheless, this particular example and discussion will highlight how clearly articulating a causal diagram may strengthen or weaken a causal claim.
+
+In their paper, Bickel, Hammel, and O'Connell address claims of discrimination in graduate school admissions at Berkeley. In particular, they examine data from the 1973 admissions cycle. That year, there were 8,442 men applicants (of which 44\% were admitted) and 4,321 women applicants (of which 35\% were admitted). They state that while this disparity is concerning, they do not believe that it is due to gender discrimination. In particular, they note that programs which have lower overall admissions rates tend to have a higher proportion of women applicants and programs which have higher overall admissions rates tend to have a lower proportion of women applicants (See Figure 1 of their paper). Although they do not use a causal diagram in their article, given their argument, their causal model could be interpreted as follows:
+
+<!-- ![Causal diagram proposed by Bickel et. al.](bickel.pdf) -->
+
+
+Thus, they claim that the total affect of gender on admission rates includes the effect due to different departments. They claim that after conditioning on department, the direct effect of gender on admission rate is negligible.
+
+However, Lundberg, Johnson, and Stewart posit an alternative causal model which shown below. They include a new variable in the data: whether or not an individual applies to Berkeley. Because the only data that can be gathered concerns individuals who did in fact apply to Berkeley, this variable *is implicitly conditioned on*.  They note that gender may influence whether or not an applicant applies to Berkeley (perhaps if there is a reputation of discrimination, then women or non-binary candidates would be less likely to apply) and obviously whether or not an applicant applies affects whether or not they are admitted. Furthermore, they argue that there are plausible common causes of "Apply to Berkeley" and "Admit." For instance, individuals with higher GRE scores are more likely to apply to Berkeley and are also more likely to be admitted. They also include a mediator between "Gender" and "admission", the variable "Perceived Gender," which indicates how an individual is perceived by the admissions committee. The causal diagram of Lundberg, Johnson and Stewart is included below.
+
+<!-- ![Causal diagram proposed by Lundberg et. al.](lundberg.pdf) -->
+
+
+## Question 1 (3 pts)
+In the causal diagram posited by Lundberg, Johnson, and Stewart, list all the paths from Gender to Admit and state whether they are causal or spurious. For each of the paths, indicate whether each node on that path is a mediator, common cause, or common effect. There should be 4 path total. I've included the first path for
+
+#### Answer to question 1
+* Path 1: Gender, Dept (mediator), Admit. It is a causal path since all edges point away from gender and towards admit
+* Path 2:
+* Path 3:
+* Path 4:
+
+## Question 2 (3 pts)
+In the analysis by Bickel, Hammel, and O'Connell, they explicitly condition on Department and implicitly condition on Apply to Berkeley (since those are the only applicants they have data on). For each path above, determine if the path is open or blocked when conditioning on those two variables ("Apply to Berkeley" and "Dept"). Explain why.
+
+#### Answer to question 2
+* Path 1: Because Dept is a mediator, when it is conditioning on, it is blocked. Thus, the entire path Gender, Dept, Admit is blocked.
+* Path 2:
+* Path 3:
+* Path 4:
+
+
+
+## Question 3 (2 pts)
+If the causal diagram posited by Lundberg, Johnson, and Stewart is true, does the analysis by Bickel, Hammel and O'connell correspond to a causal effect? Explain why or why not?
+
+#### Answer to question 3
+
+
+## Question 4 (2 pts)
+If the causal diagram posited by Lundberg, Johnson, and Stewart is true, is there a regression you could run on the data that would recover the causal effect through the path (Gender, Perceived Gender, Admit)? Explain why or why not? Assume that "Apply to Berkeley" is always implicitly conditioned on since we only have data on people who applied. 
+
+#### Answer to question 4
+
+
+## Question 5 (3 pts)
+Describe a system relevant to your research and pick 4-6 variables in that system. Draw out a causal diagram for that system and either include it below (as a picture) or you can describe it in words (i.e., state what the variables are and state where there are edges and which direction they point).
+
+#### Answer to question 5
+         
