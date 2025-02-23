@@ -1,0 +1,678 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Lab 3},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Lab 3}
+\author{}
+\date{\vspace{-2.5em}Spring 2025}
+
+\begin{document}
+\maketitle
+
+\section{Variable transformations}\label{variable-transformations}
+
+The World Bank provides valuable data on a number of public health and
+economic indicators for countries across the globe\footnote{You can
+  access the data at \url{http://data.worldbank.org/}}. Today, we will
+be looking indicators which might predict infant mortality, which is the
+number of children (per 1000 births) who die before the age of 1.
+
+\subsubsection{Questions}\label{questions}
+
+\begin{itemize}
+\tightlist
+\item
+  What factors do you think might affect or correlate with infant
+  mortality?
+\end{itemize}
+
+In particular, we will be looking at 2 specific factors which might
+correlate well with infant mortality (measured in 2015) - GDP per capita
+(roughly how much income does the average individual produce) as
+measured in 2013 and the proportion of the population with access to
+electricity (as measured in 2012). I have removed countries which were
+missing data for any of the variables.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fileName }\OtherTok{\textless{}{-}} \StringTok{"https://raw.githubusercontent.com/ysamwang/btry6020\_sp22/main/lab2/world\_bank\_data.csv"}
+\NormalTok{wb.data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(fileName)}
+\FunctionTok{head}\NormalTok{(wb.data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                country  elec_acc inf_mort gdp_capita
+## 1              Andorra 100.00000      2.1 42806.5226
+## 2          Afghanistan  43.00000     66.3   666.7951
+## 3               Angola  37.00000     96.0  5900.5296
+## 4              Albania 100.00000     12.5  4411.2582
+## 5 United Arab Emirates  97.69783      5.9 42831.0891
+## 6            Argentina  99.80000     11.1 14443.0657
+\end{verbatim}
+
+\subsubsection{Questions}\label{questions-1}
+
+\begin{itemize}
+\tightlist
+\item
+  What direction do you think the association is between each of these
+  variables?
+\item
+  What strength do you think the association is between each of these
+  variables?
+\end{itemize}
+
+We can use the \texttt{pairs} command to plot the many pairs of
+variables at once. Note that we've excluded the first column here, since
+that's just the name of countries
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{pairs}\NormalTok{(wb.data[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{])}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lab3_files/figure-latex/unnamed-chunk-2-1.pdf}
+
+\subsubsection{Questions}\label{questions-2}
+
+\begin{itemize}
+\tightlist
+\item
+  Does this look like what you might expect?
+\item
+  What sticks out?
+\item
+  Do the relationships look linear?
+\end{itemize}
+
+The relationship between electricity and infant mortality looks roughly
+linear, but the relationship between GDP per capita and infant mortality
+does not. Let's see how we might transform the data. The \texttt{log}
+function by default returns the natural log (base e). Let's plot a few
+transformations and see what makes the relationship linear.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# using the par(mfrow = c(r, c)) puts multiple }
+\CommentTok{\# plots together. The plots are arranged so }
+\CommentTok{\# that there are r rows and c columns}
+
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{2}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+
+\CommentTok{\# first argument is the X variable, second argument is the Y variable}
+\CommentTok{\# main specifies the title, xlab specifies the x axis label }
+\CommentTok{\# and ylab specifies the y axis label}
+\FunctionTok{plot}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{gdp\_capita, wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort, }\AttributeTok{main =} \StringTok{"Untransformed"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"gdp per capita"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Infant Mortality (per 1000)"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{gdp\_capita, }\FunctionTok{log}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort),}
+     \AttributeTok{main =} \StringTok{"log(mortality) \textasciitilde{} gdp/capita"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"gdp per capita"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"log(mortality)"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{log}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{gdp\_capita), wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort,}
+     \AttributeTok{main =} \StringTok{"mortality \textasciitilde{} log(gdp/capita)"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"log(gdp per capita)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"mortality"}\NormalTok{)}
+
+\FunctionTok{plot}\NormalTok{(}\FunctionTok{log}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{gdp\_capita), }\FunctionTok{log}\NormalTok{(wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort),}
+     \AttributeTok{main =} \StringTok{"log(mortality) \textasciitilde{} log(gdp/capita)"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"log(gdp/capita)"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"log(mortality)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lab3_files/figure-latex/unnamed-chunk-3-1.pdf}
+
+The plots correspond to the models:
+\[E(\text{mortality} \mid \text{gdp/capita}) = b_0 + b_1\text{gdp/capita}\]
+\[E(\log(\text{mortality}) \mid \text{gdp/capita}) = b_0 + b_1\text{gdp/capita}\]
+\[E(\text{mortality} \mid \text{gdp/capita}) = b_0 + b_1\log(\text{gdp/capita})\]
+\[E(\log(\text{mortality}) \mid \text{gdp/capita}) = b_0 + b_1\log(\text{gdp/capita})\]
+
+\subsubsection{Questions}\label{questions-3}
+
+\begin{itemize}
+\tightlist
+\item
+  Which transformation looks most linear?
+\item
+  How do we interpret the \(b_1\) parameter in each model?
+\end{itemize}
+
+The transformation that looks most linear takes the log of both
+mortality and gdp per capita. We can estimate the transformed and
+untransformed models now using the \texttt{lm} command.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Untransformed data}
+\NormalTok{untransformed.reg }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(inf\_mort }\SpecialCharTok{\textasciitilde{}}\NormalTok{ gdp\_capita, }\AttributeTok{data =}\NormalTok{ wb.data)}
+
+\FunctionTok{summary}\NormalTok{(untransformed.reg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = inf_mort ~ gdp_capita, data = wb.data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -24.011 -14.633  -5.749   8.625  67.583 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)  3.168e+01  1.743e+00  18.171  < 2e-16 ***
+## gdp_capita  -5.523e-04  7.093e-05  -7.787 5.68e-13 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 19.07 on 176 degrees of freedom
+## Multiple R-squared:  0.2562, Adjusted R-squared:  0.252 
+## F-statistic: 60.63 on 1 and 176 DF,  p-value: 5.678e-13
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# regression with transformed data}
+\NormalTok{transformed.reg }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(inf\_mort) }\SpecialCharTok{\textasciitilde{}} \FunctionTok{log}\NormalTok{(gdp\_capita), }\AttributeTok{data =}\NormalTok{ wb.data)}
+
+\FunctionTok{summary}\NormalTok{(transformed.reg)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(inf_mort) ~ log(gdp_capita), data = wb.data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -1.24132 -0.34865 -0.00525  0.34525  2.40377 
+## 
+## Coefficients:
+##                 Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)      8.11682    0.24882   32.62   <2e-16 ***
+## log(gdp_capita) -0.63135    0.02848  -22.17   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.5554 on 176 degrees of freedom
+## Multiple R-squared:  0.7363, Adjusted R-squared:  0.7348 
+## F-statistic: 491.3 on 1 and 176 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+We can also look at the residuals plotted against fitted values and
+fitted values vs observed values for both models. What does this suggest
+about how each model fits our data?
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(untransformed.reg}\SpecialCharTok{$}\NormalTok{fitted.values, untransformed.reg}\SpecialCharTok{$}\NormalTok{residuals, }\AttributeTok{main =} \StringTok{"Untransformed"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"fitted values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"residuals"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(transformed.reg}\SpecialCharTok{$}\NormalTok{fitted.values, transformed.reg}\SpecialCharTok{$}\NormalTok{residuals, }\AttributeTok{main =} \StringTok{"Transformed"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"fitted values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"residuals"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lab3_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(untransformed.reg}\SpecialCharTok{$}\NormalTok{fitted.values, wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort, }\AttributeTok{main =} \StringTok{"Untransformed"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"fitted values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Obs Values"}\NormalTok{)}
+
+
+\NormalTok{fitted.values.log }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(transformed.reg}\SpecialCharTok{$}\NormalTok{fitted.values }\SpecialCharTok{+} \FunctionTok{summary}\NormalTok{(transformed.reg)}\SpecialCharTok{$}\NormalTok{sigma}\SpecialCharTok{\^{}}\DecValTok{2}\SpecialCharTok{/}\DecValTok{2}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(fitted.values.log,wb.data}\SpecialCharTok{$}\NormalTok{inf\_mort, }\AttributeTok{main =} \StringTok{"Transformed"}\NormalTok{,}
+     \AttributeTok{xlab =} \StringTok{"fitted values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Obs Values"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lab3_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\subsubsection{Questions}\label{questions-4}
+
+\begin{itemize}
+\tightlist
+\item
+  What do you notice about the fitted values for the untransformed data?
+  Hint: What is the range of fitted values, and does it make sense given
+  the variable we are predicting?
+\item
+  Compare the \(R^2\) from both regressions. What does this suggest
+  about which explanatory variable is a better predictor of infant
+  mortality?
+\item
+  Why do you think this is true?
+\item
+  Note that we aren't exactly comparing apples to apples here because
+  one regression has log(mortality) as the response while the other uses
+  mortality untransformed. Is there a way you could make the comparison
+  more fair?
+\item
+  Which model would you use if you are trying to predict infant
+  mortality for a country not in the data set? Which model would you use
+  if you are trying to explain to a collaborator? Which model would you
+  use if you are trying to test if infant mortality is associated with
+  gdp/capita?
+\item
+  Repeat the exercise but with electricity access? Which model would you
+  select when using electricity access? What about when you include both
+  electricity access and gdp per capita?
+\end{itemize}
+
+\newpage
+
+\subsection{Housing Data}\label{housing-data}
+
+In class, we've been discussing data about housing prices and in last
+week's lab, we considered modeling the home prices with polynomial
+regression. As a quick refresher, recall that there are 522 observations
+with the following variables:
+
+\begin{itemize}
+\tightlist
+\item
+  price: in 2002 dollars
+\item
+  area: Square footage
+\item
+  bed: number of bedrooms
+\item
+  bath: number of bathrooms
+\item
+  ac: central AC (yes/no)
+\item
+  garage: number of garage spaces
+\item
+  pool: yes/no
+\item
+  year: year of construction
+\item
+  quality: high/medium/low
+\item
+  home style: coded 1 through 7
+\item
+  lot size: sq ft
+\item
+  highway: near a highway (yes/no)
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{fileName }\OtherTok{\textless{}{-}} \FunctionTok{url}\NormalTok{(}\StringTok{"https://raw.githubusercontent.com/ysamwang/btry6020\_sp22/main/lectureData/estate.csv"}\NormalTok{)}
+\NormalTok{housing\_data }\OtherTok{\textless{}{-}} \FunctionTok{read.csv}\NormalTok{(fileName)}
+
+\FunctionTok{head}\NormalTok{(housing\_data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   id  price area bed bath  ac garage pool year quality style   lot highway
+## 1  1 360000 3032   4    4 yes      2   no 1972  medium     1 22221      no
+## 2  2 340000 2058   4    2 yes      2   no 1976  medium     1 22912      no
+## 3  3 250000 1780   4    3 yes      2   no 1980  medium     1 21345      no
+## 4  4 205500 1638   4    2 yes      2   no 1963  medium     1 17342      no
+## 5  5 275500 2196   4    3 yes      2   no 1968  medium     7 21786      no
+## 6  6 248000 1966   4    3 yes      5  yes 1972  medium     1 18902      no
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{housing\_data}\SpecialCharTok{$}\NormalTok{age }\OtherTok{\textless{}{-}} \DecValTok{2002} \SpecialCharTok{{-}}\NormalTok{ housing\_data}\SpecialCharTok{$}\NormalTok{year}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{Categorical variables}\label{categorical-variables}
+
+In our data, Housing Style is coded 1 through 7
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{table}\NormalTok{(housing\_data}\SpecialCharTok{$}\NormalTok{style)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+##   1   2   3   4   5   6   7   9  10  11 
+## 214  58  64  11  18  18 136   1   1   1
+\end{verbatim}
+
+In class, we described how to include categorical variables in a
+regression by picking a reference category and then including binary
+variables for the other categories. R does this entire process for us
+inside the lm command.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#}
+\CommentTok{\# Include style}
+\NormalTok{model1 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ area }\SpecialCharTok{+}\NormalTok{ style, }\AttributeTok{data =}\NormalTok{ housing\_data)}
+\FunctionTok{summary}\NormalTok{(model1)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = price ~ area + style, data = housing_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -271624  -34852   -5465   28660  312589 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) -1.030e+05  1.126e+04  -9.152  < 2e-16 ***
+## area         1.875e+02  5.857e+00  32.021  < 2e-16 ***
+## style       -1.286e+04  1.625e+03  -7.912 1.54e-14 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 74820 on 519 degrees of freedom
+## Multiple R-squared:  0.7069, Adjusted R-squared:  0.7058 
+## F-statistic: 625.8 on 2 and 519 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\DocumentationTok{\#\#\#}
+\CommentTok{\# Include style as a factor (i.e., make sure R knows it is categorical data)}
+\NormalTok{model2 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(price }\SpecialCharTok{\textasciitilde{}}\NormalTok{ area }\SpecialCharTok{+} \FunctionTok{as.factor}\NormalTok{(style), }\AttributeTok{data =}\NormalTok{ housing\_data)}
+\FunctionTok{summary}\NormalTok{(model2)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = price ~ area + as.factor(style), data = housing_data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -273461  -34602   -4571   28259  310176 
+## 
+## Coefficients:
+##                      Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)        -1.162e+05  1.286e+04  -9.034  < 2e-16 ***
+## area                1.882e+02  6.094e+00  30.886  < 2e-16 ***
+## as.factor(style)2  -2.040e+04  1.107e+04  -1.843   0.0659 .  
+## as.factor(style)3  -1.785e+04  1.066e+04  -1.674   0.0948 .  
+## as.factor(style)4  -3.446e+04  2.311e+04  -1.491   0.1366    
+## as.factor(style)5  -8.499e+04  1.856e+04  -4.578 5.90e-06 ***
+## as.factor(style)6  -7.597e+04  1.867e+04  -4.068 5.49e-05 ***
+## as.factor(style)7  -7.854e+04  1.043e+04  -7.528 2.35e-13 ***
+## as.factor(style)9   2.033e+04  7.504e+04   0.271   0.7866    
+## as.factor(style)10 -8.684e+04  7.597e+04  -1.143   0.2535    
+## as.factor(style)11 -6.179e+04  7.493e+04  -0.825   0.4100    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 74750 on 511 degrees of freedom
+## Multiple R-squared:  0.7119, Adjusted R-squared:  0.7063 
+## F-statistic: 126.3 on 10 and 511 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\subsubsection{Questions}\label{questions-5}
+
+\begin{itemize}
+\tightlist
+\item
+  What is the reference category that R is using?
+\item
+  How would you interpret the estimated coefficients?
+\item
+  What is the estimated difference in home price when comparing a house
+  which is style 2 against a house which is style 4?
+\end{itemize}
+
+\subsection{Interaction terms}\label{interaction-terms}
+
+Last week, we examined how home prices were associated with age and
+modeled the relationship with polynomial regressions. If you recall,
+none of the models fit particularly well. Turns out, using a log
+transformation on housing price seems to make the relationship more
+linear.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{model3 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(price) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ age, }\AttributeTok{data =}\NormalTok{ housing\_data)}
+
+\FunctionTok{par}\NormalTok{(}\AttributeTok{mfrow =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\FunctionTok{plot}\NormalTok{(model3}\SpecialCharTok{$}\NormalTok{fitted.values, }\FunctionTok{log}\NormalTok{(housing\_data}\SpecialCharTok{$}\NormalTok{price), }\AttributeTok{xlab =} \StringTok{"Fitted Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Obs Values"}\NormalTok{)}
+\FunctionTok{plot}\NormalTok{(model3}\SpecialCharTok{$}\NormalTok{fitted.values, model3}\SpecialCharTok{$}\NormalTok{residuals, }\AttributeTok{xlab =} \StringTok{"Fitted Values"}\NormalTok{, }\AttributeTok{ylab =} \StringTok{"Residuals"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{lab3_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+We see from the estimated coefficients that an older home is typically
+less expensive than a newer home.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{summary}\NormalTok{(model3)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(price) ~ age, data = housing_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.86899 -0.24789 -0.07036  0.22367  1.46833 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(>|t|)    
+## (Intercept) 12.9356873  0.0342333  377.87   <2e-16 ***
+## age         -0.0142770  0.0008717  -16.38   <2e-16 ***
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.3509 on 520 degrees of freedom
+## Multiple R-squared:  0.3403, Adjusted R-squared:  0.339 
+## F-statistic: 268.2 on 1 and 520 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+However, as we discussed in class, we might also expect that the
+association of price and age depends on the quality of the home. We can
+fit a model with the interaction between age and quality to see
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# We can include each covariate and the interaction term in the lm formula}
+\NormalTok{model4 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(price) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ age }\SpecialCharTok{+}\NormalTok{ quality }\SpecialCharTok{+}\NormalTok{ age }\SpecialCharTok{*}\NormalTok{ quality, }\AttributeTok{data =}\NormalTok{ housing\_data)}
+\FunctionTok{summary}\NormalTok{(model4)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(price) ~ age + quality + age * quality, data = housing_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.70937 -0.16798 -0.00132  0.14146  0.82006 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       13.2543198  0.0518526 255.615   <2e-16 ***
+## age               -0.0045991  0.0026210  -1.755   0.0799 .  
+## qualitylow        -1.0931907  0.0888987 -12.297   <2e-16 ***
+## qualitymedium     -0.6222432  0.0631323  -9.856   <2e-16 ***
+## age:qualitylow     0.0023796  0.0029750   0.800   0.4241    
+## age:qualitymedium -0.0003452  0.0028204  -0.122   0.9026    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2524 on 516 degrees of freedom
+## Multiple R-squared:  0.6615, Adjusted R-squared:  0.6582 
+## F-statistic: 201.7 on 5 and 516 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Alternatively, if we only explicitly specify the interaction term, the main}
+\CommentTok{\# effects are automatically included}
+\NormalTok{model5 }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\FunctionTok{log}\NormalTok{(price) }\SpecialCharTok{\textasciitilde{}}\NormalTok{ age }\SpecialCharTok{*}\NormalTok{ quality, }\AttributeTok{data =}\NormalTok{ housing\_data)}
+\FunctionTok{summary}\NormalTok{(model5)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Call:
+## lm(formula = log(price) ~ age * quality, data = housing_data)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.70937 -0.16798 -0.00132  0.14146  0.82006 
+## 
+## Coefficients:
+##                     Estimate Std. Error t value Pr(>|t|)    
+## (Intercept)       13.2543198  0.0518526 255.615   <2e-16 ***
+## age               -0.0045991  0.0026210  -1.755   0.0799 .  
+## qualitylow        -1.0931907  0.0888987 -12.297   <2e-16 ***
+## qualitymedium     -0.6222432  0.0631323  -9.856   <2e-16 ***
+## age:qualitylow     0.0023796  0.0029750   0.800   0.4241    
+## age:qualitymedium -0.0003452  0.0028204  -0.122   0.9026    
+## ---
+## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+## 
+## Residual standard error: 0.2524 on 516 degrees of freedom
+## Multiple R-squared:  0.6615, Adjusted R-squared:  0.6582 
+## F-statistic: 201.7 on 5 and 516 DF,  p-value: < 2.2e-16
+\end{verbatim}
+
+\subsubsection{Questions}\label{questions-6}
+
+\begin{itemize}
+\tightlist
+\item
+  Write out the form of the model that is being estimated
+\item
+  Looking at the estimated coefficients, are you surprised by the
+  results?
+\item
+  Do you think the relationship between age and price differs depending
+  on quality?
+\item
+  What are some reasons you might include the interaction term in your
+  model?
+\item
+  What are some reasons you might choose to not include the interaction
+  term in your model?
+\end{itemize}
+
+\end{document}

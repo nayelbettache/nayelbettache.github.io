@@ -1,0 +1,220 @@
+---
+title: "Lab 3"
+author: ""
+date: "Spring 2025"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Variable transformations
+
+The World Bank provides valuable data on a number of public health and economic indicators for countries across the globe[^1]. Today, we will be looking indicators which might predict infant mortality, which is the number of children (per 1000 births) who die before the age of 1.
+
+[^1]: You can access the data at <http://data.worldbank.org/>
+
+### Questions
+
+-   What factors do you think might affect or correlate with infant mortality?
+
+In particular, we will be looking at 2 specific factors which might correlate well with infant mortality (measured in 2015) - GDP per capita (roughly how much income does the average individual produce) as measured in 2013 and the proportion of the population with access to electricity (as measured in 2012). I have removed countries which were missing data for any of the variables.
+
+```{r}
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lab2/world_bank_data.csv"
+wb.data <- read.csv(fileName)
+head(wb.data)
+```
+
+### Questions
+
+-   What direction do you think the association is between each of these variables?
+-   What strength do you think the association is between each of these variables?
+
+We can use the \texttt{pairs} command to plot the many pairs of variables at once. Note that we've excluded the first column here, since that's just the name of countries
+
+```{r}
+pairs(wb.data[, -1])
+```
+
+### Questions
+
+-   Does this look like what you might expect?
+-   What sticks out?
+-   Do the relationships look linear?
+
+The relationship between electricity and infant mortality looks roughly linear, but the relationship between GDP per capita and infant mortality does not. Let's see how we might transform the data. The \texttt{log} function by default returns the natural log (base e). Let's plot a few transformations and see what makes the relationship linear.
+
+```{r}
+# using the par(mfrow = c(r, c)) puts multiple 
+# plots together. The plots are arranged so 
+# that there are r rows and c columns
+
+par(mfrow = c(2,2))
+
+# first argument is the X variable, second argument is the Y variable
+# main specifies the title, xlab specifies the x axis label 
+# and ylab specifies the y axis label
+plot(wb.data$gdp_capita, wb.data$inf_mort, main = "Untransformed",
+     xlab = "gdp per capita", ylab = "Infant Mortality (per 1000)")
+
+plot(wb.data$gdp_capita, log(wb.data$inf_mort),
+     main = "log(mortality) ~ gdp/capita",
+     xlab = "gdp per capita", ylab = "log(mortality)")
+
+plot(log(wb.data$gdp_capita), wb.data$inf_mort,
+     main = "mortality ~ log(gdp/capita)",
+     xlab = "log(gdp per capita)", ylab = "mortality")
+
+plot(log(wb.data$gdp_capita), log(wb.data$inf_mort),
+     main = "log(mortality) ~ log(gdp/capita)",
+     xlab = "log(gdp/capita)", ylab = "log(mortality)")
+
+```
+
+The plots correspond to the models: $$E(\text{mortality} \mid \text{gdp/capita}) = b_0 + b_1\text{gdp/capita}$$ $$E(\log(\text{mortality}) \mid \text{gdp/capita}) = b_0 + b_1\text{gdp/capita}$$ $$E(\text{mortality} \mid \text{gdp/capita}) = b_0 + b_1\log(\text{gdp/capita})$$ $$E(\log(\text{mortality}) \mid \text{gdp/capita}) = b_0 + b_1\log(\text{gdp/capita})$$
+
+### Questions
+
+-   Which transformation looks most linear?
+-   How do we interpret the $b_1$ parameter in each model?
+
+The transformation that looks most linear takes the log of both mortality and gdp per capita. We can estimate the transformed and untransformed models now using the \texttt{lm} command.
+
+```{r}
+# Untransformed data
+untransformed.reg <- lm(inf_mort ~ gdp_capita, data = wb.data)
+
+summary(untransformed.reg)
+
+# regression with transformed data
+transformed.reg <- lm(log(inf_mort) ~ log(gdp_capita), data = wb.data)
+
+summary(transformed.reg)
+```
+
+We can also look at the residuals plotted against fitted values and fitted values vs observed values for both models. What does this suggest about how each model fits our data?
+
+```{r}
+par(mfrow = c(1,2))
+plot(untransformed.reg$fitted.values, untransformed.reg$residuals, main = "Untransformed",
+     xlab = "fitted values", ylab = "residuals")
+plot(transformed.reg$fitted.values, transformed.reg$residuals, main = "Transformed",
+     xlab = "fitted values", ylab = "residuals")
+```
+
+```{r}
+par(mfrow = c(1,2))
+plot(untransformed.reg$fitted.values, wb.data$inf_mort, main = "Untransformed",
+     xlab = "fitted values", ylab = "Obs Values")
+
+
+fitted.values.log <- exp(transformed.reg$fitted.values + summary(transformed.reg)$sigma^2/2)
+plot(fitted.values.log,wb.data$inf_mort, main = "Transformed",
+     xlab = "fitted values", ylab = "Obs Values")
+```
+
+### Questions
+
+-   What do you notice about the fitted values for the untransformed data? Hint: What is the range of fitted values, and does it make sense given the variable we are predicting?
+-   Compare the $R^2$ from both regressions. What does this suggest about which explanatory variable is a better predictor of infant mortality?
+-   Why do you think this is true?
+-   Note that we aren't exactly comparing apples to apples here because one regression has log(mortality) as the response while the other uses mortality untransformed. Is there a way you could make the comparison more fair?
+-   Which model would you use if you are trying to predict infant mortality for a country not in the data set? Which model would you use if you are trying to explain to a collaborator? Which model would you use if you are trying to test if infant mortality is associated with gdp/capita?
+-   Repeat the exercise but with electricity access? Which model would you select when using electricity access? What about when you include both electricity access and gdp per capita?
+
+\newpage
+
+## Housing Data
+
+In class, we've been discussing data about housing prices and in last week's lab, we considered modeling the home prices with polynomial regression. As a quick refresher, recall that there are 522 observations with the following variables:
+
+-   price: in 2002 dollars
+-   area: Square footage
+-   bed: number of bedrooms
+-   bath: number of bathrooms
+-   ac: central AC (yes/no)
+-   garage: number of garage spaces
+-   pool: yes/no
+-   year: year of construction
+-   quality: high/medium/low
+-   home style: coded 1 through 7
+-   lot size: sq ft
+-   highway: near a highway (yes/no)
+
+```{r}
+fileName <- url("https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/estate.csv")
+housing_data <- read.csv(fileName)
+
+head(housing_data)
+housing_data$age <- 2002 - housing_data$year
+```
+
+## Categorical variables
+
+In our data, Housing Style is coded 1 through 7
+
+```{r}
+table(housing_data$style)
+```
+
+In class, we described how to include categorical variables in a regression by picking a reference category and then including binary variables for the other categories. R does this entire process for us inside the lm command.
+
+```{r}
+###
+# Include style
+model1 <- lm(price ~ area + style, data = housing_data)
+summary(model1)
+
+###
+# Include style as a factor (i.e., make sure R knows it is categorical data)
+model2 <- lm(price ~ area + as.factor(style), data = housing_data)
+summary(model2)
+```
+
+### Questions
+
+-   What is the reference category that R is using?
+-   How would you interpret the estimated coefficients?
+-   What is the estimated difference in home price when comparing a house which is style 2 against a house which is style 4?
+
+## Interaction terms
+
+Last week, we examined how home prices were associated with age and modeled the relationship with polynomial regressions. If you recall, none of the models fit particularly well. Turns out, using a log transformation on housing price seems to make the relationship more linear.
+
+```{r}
+model3 <- lm(log(price) ~ age, data = housing_data)
+
+par(mfrow = c(1,2))
+plot(model3$fitted.values, log(housing_data$price), xlab = "Fitted Values", ylab = "Obs Values")
+plot(model3$fitted.values, model3$residuals, xlab = "Fitted Values", ylab = "Residuals")
+```
+
+We see from the estimated coefficients that an older home is typically less expensive than a newer home.
+
+```{r}
+summary(model3)
+```
+
+However, as we discussed in class, we might also expect that the association of price and age depends on the quality of the home. We can fit a model with the interaction between age and quality to see
+
+```{r}
+# We can include each covariate and the interaction term in the lm formula
+model4 <- lm(log(price) ~ age + quality + age * quality, data = housing_data)
+summary(model4)
+
+# Alternatively, if we only explicitly specify the interaction term, the main
+# effects are automatically included
+model5 <- lm(log(price) ~ age * quality, data = housing_data)
+summary(model5)
+
+```
+
+### Questions
+
+-   Write out the form of the model that is being estimated
+-   Looking at the estimated coefficients, are you surprised by the results?
+-   Do you think the relationship between age and price differs depending on quality?
+-   What are some reasons you might include the interaction term in your model?
+-   What are some reasons you might choose to not include the interaction term in your model?
