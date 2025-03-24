@@ -1,0 +1,372 @@
+---
+title: "Lab 7"
+author: ""
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Bootstrapping Linear Models 
+To show that bootstrapping regression estimates is a reasonable thing to do, we will compare the distribution derived from the bootstrap to the actual sampling distribution, which we can simulate. In practice, we cannot simulate the true sampling distribution, but can only get the bootstrap distribution.
+
+## Settings where the model based sampling distribution holds
+We first show that bootstrapping linear models can indeed be a reasonable thing to do when the data satisfies all our assumptions. In particular, we can see that as $n$ grows larger, the bootstrap distribution grows more and more similar to the distribution of the test statistic we would get from simulations as well as the model based sampling distribution. We can see that the empirical bootstrap and wild bootstrap both work reasonably well. The simulated sampling distribution should be more or less the same each time you run the code below. However, the bootstrap distribution depends on the observed data, it will change each time you run the code. Run it several times to see how the bootstrap distribution changes from run to run. Then, try increasing $n = 20, 100, 400$. In the plots, the bootstrap distribution is shown with the histogram, the true sampling distribution is shown in red, and the model based sampling distribution is shown in blue.
+
+```{r}
+## Homoscedastic linear model
+# Fixed Covariates
+# Using Wild Bootstrap
+
+sim.size <- 5000
+b <- 1
+n <- 20
+# Fixed Design 
+x <- seq(0, 10, by = 10/(n-1))
+y <- 1 + b * x + rnorm(n)
+
+## We are interested in the estimated coefficient
+mod <- lm(y~ x)
+observed.stat <- summary(mod)$coef[2, 1]
+
+
+### Approximate sampling distribution using the Wild and empirical bootstrap
+rec.boot <- matrix(0, sim.size, 2)
+for(i in 1:sim.size){
+  
+  # Wild Bootstrap
+  y.boot.wild <- mod$fitted + mod$residuals * rnorm(n)
+  
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 1] <- summary(lm(y.boot.wild ~ x))$coeff[2,1] - observed.stat
+  
+  
+  # Pairs Bootstrap
+  ind <- sample(n, replace = T)
+  x.boot.emp <- x[ind]
+  y.boot.emp <- y[ind]
+  
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 2] <- summary(lm(y.boot.emp ~ x.boot.emp))$coeff[2,1] - observed.stat
+  
+  
+}
+
+
+
+rec.sim <- rep(0, sim.size)
+for(i in 1:sim.size){
+  
+  ## Don't re-draw X
+  x.sim <- x
+  y.sim <- 1 + b * x.sim + rnorm(n)
+  rec.sim[i] <- summary(lm(y.sim ~ x.sim))$coeff[2,1] - b
+
+}
+
+
+par(mfrow = c(1, 2))
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,1], freq = F, col = "gray", breaks = 15, main = "Wild", xlab = expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+lines(seq(-5, 5, by = .01), dnorm(seq(-5, 5, by = .01), mean = 0, sd = sqrt(1 / sum((x - mean(x))^2))), col = "blue", lwd = 2)
+
+
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,2], freq = F, col = "gray", breaks = 15, main = "Pairs", xlab =  expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+lines(seq(-5, 5, by = .01), dnorm(seq(-5, 5, by = .01), mean = 0, sd = sqrt(1 / sum((x - mean(x))^2))), col = "blue", lwd = 2)
+
+      
+```
+
+## Settings where the model based sampling distribution does not hold
+In the settings above, all our assumptions hold, so the model based sampling distribution also holds. However, when the homoscedasticity assumption does not hold, the model based sampling distribution is no longer correct. As we will see though, the bootstrap distribution can still approximate the true sampling distribution (shown in red) well. When $n$ is small, that the histogram (bootstrap) may not be so close to the red (true sampling distribution). However, as $n$ increases, the histogram (bootstrap) generally agrees with the red (true sampling distribution), but the the blue (model based) does not. Try this with multiple times with $n = 20, 100, 400$.
+
+```{r}
+## Heteroscedastic linear model
+# Fixed Covariates
+# Using Wild Bootstrap
+
+sim.size <- 5000
+b <- 1
+n <- 20
+# Fixed Design 
+x <- seq(0, 10, by = 10/(n-1))
+y <- 1 + b * x + rnorm(n, sd = x / 3)
+
+## We are interested in the estimated coefficient
+mod <- lm(y~ x)
+observed.stat <- summary(mod)$coef[2, 1]
+
+
+### Approximate sampling distribution using the Wild and empirical bootstrap
+rec.boot <- matrix(0, sim.size, 2)
+for(i in 1:sim.size){
+  
+  # Wild Bootstrap
+  y.boot.wild <- mod$fitted + mod$residuals * rnorm(n)
+  
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 1] <- summary(lm(y.boot.wild ~ x))$coeff[2,1] - observed.stat
+  
+  
+  # Pairs Bootstrap
+  ind <- sample(n, replace = T)
+  x.boot.emp <- x[ind]
+  y.boot.emp <- y[ind]
+  
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 2] <- summary(lm(y.boot.emp ~ x.boot.emp))$coeff[2,1] - observed.stat
+  
+  
+}
+
+
+
+rec.sim <- rep(0, sim.size)
+for(i in 1:sim.size){
+  
+  # don't redraw X
+  x.sim <- x
+  y.sim <- 1 + b * x.sim + rnorm(n, sd = x / 3)
+  rec.sim[i] <- summary(lm(y.sim ~ x.sim))$coeff[2,1] - b
+
+}
+
+
+par(mfrow = c(1, 2))
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,1], freq = F, col = "gray", breaks = 15, main = "Wild", xlab = expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+lines(seq(-5, 5, by = .01), dnorm(seq(-5, 5, by = .01), mean = 0, sd = sqrt(1 / sum((x - mean(x))^2))), col = "blue", lwd = 2)
+
+
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,2], freq = F, col = "gray", breaks = 15, main = "Pairs", xlab =  expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+lines(seq(-5, 5, by = .01), dnorm(seq(-5, 5, by = .01), mean = 0, sd = sqrt(1 / sum((x - mean(x))^2))), col = "blue", lwd = 2)
+
+      
+```
+
+## Non-standard quantities
+Finally, we can see that the bootstrap approximates the sampling distribution of quantities for which the sampling distribution would be hard compute. In particular, we will look at the sampling distribution of $\hat b_1 / \hat b_2$.  
+
+```{r}
+## Homoscedastic linear model
+# Fixed Covariates
+# Using Wild Bootstrap
+
+sim.size <- 5000
+b <- c(1, 2)
+n <- 100
+# Fixed Design 
+x <- mvtnorm::rmvnorm(n, sigma = matrix(c(1, .2, .2, 1), byrow = T, 2, 2))
+y <- 1 + x %*% b + rnorm(n)
+
+mod <- lm(y ~ x)
+## We are interested in the estimated coefficient
+observed.stat <- mod$coef[2] / mod$coef[3]
+
+
+### Approximate sampling distribution using the Wild and empirical bootstrap
+rec.boot <- matrix(0, sim.size, 2)
+for(i in 1:sim.size){
+  
+  # Wild Bootstrap
+  y.boot.wild <- mod$fitted + mod$residuals * rnorm(n)
+
+  mod.wild <- lm(y.boot.wild ~ x)
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 1] <- mod.wild$coeff[2] / mod.wild$coeff[3]  - observed.stat
+  
+  
+  # Pairs Bootstrap
+  ind <- sample(n, replace = T)
+  x.boot.emp <- x[ind, ]
+  y.boot.emp <- y[ind]
+  
+  mod.emp <- lm(y.boot.emp ~ x.boot.emp)
+  # Calculate the statistic for the bootstrap sample
+  rec.boot[i, 2] <- mod.emp$coeff[2] / mod.emp$coeff[3] - observed.stat
+  
+  
+}
+
+
+
+rec.sim <- rep(0, sim.size)
+for(i in 1:sim.size){
+  
+  ## Don't re-draw 
+  y.sim <- 1 + x %*% b + rnorm(n)
+  mod.sim <- lm(y.sim ~ x)
+  rec.sim[i] <- mod.sim$coefficients[2] / mod.sim$coefficients[3] - (b[1] / b[2])
+
+}
+
+
+par(mfrow = c(1, 2))
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,1], freq = F, col = "gray", breaks = 15, main = "Wild", xlab = expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+#lines(seq(-5, 5, by = .01), dnorm(seq(-5, 5, by = .01), mean = 0, sd = sqrt(1 / sum((x - mean(x))^2))), col = "blue", lwd = 2)
+
+
+### Bootstrapped sampling distribution in gray histogram
+hist(rec.boot[,2], freq = F, col = "gray", breaks = 15, main = "Pairs", xlab =  expression(hat(b)))
+### Simulated Sampling Distribution in red
+lines(density(rec.sim), col = "red", lwd = 2)
+### Model Based Sampling Distribution in Blue
+
+      
+```
+
+## Bootstrapping Linear Models 
+The R package \texttt{lmboot} can do the bootstrap with a single function (instead of the for loop we used above). We'll examine the housing price data set again, and fit a model which predicts the $\log(\text{price})$ given the $\log(\text{area})$,  bedrooms, bathrooms, whether there is a garage, and quality.
+
+```{r}
+# install.packages("lmboot")
+library("lmboot")
+library("lmtest")
+library("sandwich")
+
+
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/estate.csv"
+housing_data <- read.csv(fileName)
+names(housing_data)
+
+
+mod <- lm(log(price) ~ log(area) + bed + bath + garage + quality,
+          data = housing_data)
+
+
+summary(mod)
+```
+
+We can now form confidence intervals for each of the parameters using a bootstrap procedure. We can see that in this case, each of the procedures we use to create confidence intervals aren't too dissimilar. This should hopefully be reassuring that our model assumptions aren't too unreasonable.  
+```{r}
+## Gives list of parameter estimates from each empirical bootstrap
+# (or paired boostrap) resample
+paired.output <- paired.boot(log(price) ~ log(area) + bed + bath + garage + quality,
+          data = housing_data, B = 5000)
+## Gives list of parameter estimates from each wild bootstrap resample
+wild.output <- wild.boot(log(price) ~ log(area) + bed + bath + garage + quality,
+          data = housing_data, B = 5000)
+
+
+## Apply takes a function (FUN) and applies it to each row or column
+## of a matrix
+## MAR = 1, applies the function to each row
+## MAR = 2, applies the function to each column
+
+## Get standard deviation of each column (which corresponds to the bootstrap estimates)
+paired.se <- apply(paired.output$bootEstParam, MAR = 2, FUN = sd)
+wild.se <- apply(wild.output$bootEstParam, MAR = 2, FUN = sd)
+
+## For the percentile method get .025 and .975 quantiles of each column, but we
+## subtract the estimated values
+paired.pct <- apply(t(paired.output$bootEstParam) - mod$coefficients,
+                    MAR = 1, FUN = quantile, prob = c(.025, .975))
+wild.pct <- apply(t(wild.output$bootEstParam) - mod$coefficients,
+                  MAR = 1, FUN = quantile, prob = c(.025, .975))
+
+## Form the confidence intervals using the normal approximation
+# but SE's estimated via bootstrap
+cbind(mod$coef -1.96 * paired.se, mod$coef + 1.96 * paired.se)
+cbind(mod$coef -1.96 * wild.se, mod$coef + 1.96 * wild.se)
+
+# Percentile bootstrap
+mod$coefficients - t(paired.pct[2:1, ]) 
+mod$coefficients - t(wild.pct[2:1, ])
+
+# Model based confidence interval
+coefci(mod, level = .95)
+# Robust confidence intervals
+coefci(mod, level = .95, vcov. = vcovHC(mod, type = "HC3"))
+
+```
+
+\newpage
+
+# Mixed Effects Models
+To examine mixed effects models, we will explore ecology data from "Integrative modelling reveals mechanisms linking productivity and plant species richness" by [Grace et. al. (2016, Nature)](https://www.nature.com/articles/nature16524). In particular, the authors are interested in modeling the relationship between the producitivity of a particular plot of land and the species richness of that plot of land. Take a moment to briefly skim the paper (or abstract).
+
+We can fit a model to predict $\log(richness)$ from $\log(productivity)$ and $\log(total biomass)$.
+```{r}
+library(lme4)
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/grace_plot_level.csv"
+dat <- read.csv(fileName)
+
+# Remove Missing Data
+# Generally, we want to be careful about the data we remove
+# As this may bias our estimates if the missingness is important
+dat <- na.omit(dat)
+dim(dat)
+
+
+
+# Fit a linear model which disregards the site structure
+mod <- lm(ln.prich~ ln.ptotmass + ln.pprod, data = dat)
+summary(mod)
+
+```
+
+### Questions
+* Check the model we fit above. Do the linear model assumptions seem to hold?
+* In their data set, they have recorded characteristics about 1,126 plots of land, and each of those plots are situated in 1 of 39 different sites. What suspicions does this raise about the independence assumption?
+
+
+We can account for potential dependence across site using either a fixed effect or random effect.
+```{r}
+# Fit model with a fixed effect for each site
+mod.fe <- lm(ln.prich~ ln.ptotmass + ln.pprod + psitecode, data = dat)
+summary(mod.fe)
+
+# Fit a model with a random intercept for each site
+mod.re <- lmer(ln.prich~ ln.ptotmass + ln.pprod + (1 | psitecode), data = dat)
+summary(mod.re)
+
+# We can get confidence intervals for each of the slope estimates
+confint(mod.re)
+
+# We can also get the estimated random effects for each site
+ranef(mod.re) 
+
+
+# Suppose we want to test whether or not ln.pprod is associated with
+# ln.prich after accounting for total mass and the random intercepts
+# We can do that with the anova command as before
+mod.re.null <- lmer(ln.prich~ ln.ptotmass + (1 | psitecode), data = dat)
+anova(mod.re.null, mod.re)
+```
+
+
+### Questions
+* How should we interpret each of the fixed effects in mod.fe? 
+* Compare the estimates of the models which account for site with the estimates of the model which naively does not account for site.
+
+
+Suppose we think that each site may have it's own random intercept, as well as it's own random slope for total mass. We can fit that model using the following code
+```{r}
+# Fit a model with a random intercept and slopes for each site
+mod.re2 <- lmer(ln.prich~ ln.pprod + (1 + ln.pprod | psitecode), data = dat)
+summary(mod.re2)
+
+```
+### Questions
+* How would we interpret the random slopes in this context?
+* Do you think it makes sense to include random slopes?
