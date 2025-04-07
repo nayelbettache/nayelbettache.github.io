@@ -1,0 +1,190 @@
+---
+title: "Lab 8"
+author: ""
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+#  Housing Data
+For this lab, we will consider the housing data again. So far, we have discussed various models for predicting price, but now we will compare various models against each other. As a quick refresher, recall that there are 522 observations with the following variables:
+
+* price: in 2002 dollars
+* area: Square footage
+* bed: number of bedrooms
+* bath: number of bathrooms
+* ac: central AC (yes/no)
+* garage: number of garage spaces
+* pool: yes/no
+* year: year of construction
+* quality: high/medium/low
+* home style: coded 1 through 7
+* lot size: sq ft 
+* highway: near a highway (yes/no)
+
+
+```{r}
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/estate.csv"
+housing_data <- read.csv(fileName)
+head(housing_data)
+#create new column for the age of house
+housing_data$age <- 2002-housing_data$year
+```
+
+\newpage
+#  Cross Validation
+##  Data Splitting
+We will now compare a few different models using cross validation. Notice that each time we include a new variable, the RSS never increases.
+```{r}
+# Fix the way of randomly splitting the data, 
+# such that each time you run will provide same results (optional),
+# 1 in set.seed(1) can be set with any number. 
+set.seed(1)
+
+# Sample splitting 70% training and 30% test
+# sample size
+n <- dim(housing_data)[1]
+m <- floor(n * 0.7)
+# generate random training indics (70%)
+train_idx <- sample(1:n, m, replace = FALSE)
+# extract the training data using training indices
+train_set <- housing_data[train_idx,]
+# extract the test data
+test_set <- housing_data[-train_idx,]
+y_true <- log(test_set$price)
+
+#Fit the model using training data 
+mod1 <- lm(log(price) ~ age + area, data = train_set)
+summary(mod1)
+
+#Predict the price of new data (test set) using the model fitted by training set
+y_hat_1 <- predict(mod1, test_set)
+# Calculate the error: mean squared error (MSE) 
+pred_error_1 <- mean((y_hat_1-y_true)^2)
+pred_error_1
+
+# try different model by adding "lot" as explanary variable
+mod2 <- lm(log(price) ~ age + area + lot, data = train_set)
+summary(mod2)
+y_hat_2 <- predict(mod2, test_set)
+pred_error_2 <- mean((y_hat_2-y_true)^2)
+pred_error_2
+
+# try different model by adding "quality" as explanary variable
+mod3 <- lm(log(price) ~ age + area + lot + quality, data = train_set)
+summary(mod3)
+y_hat_3 <- predict(mod3, test_set)
+pred_error_3 <- mean((y_hat_3-y_true)^2)
+pred_error_3
+
+
+# try different model by adding "pool" as explanary variable
+mod4 <- lm(log(price) ~ age + area + lot + quality + pool, data = train_set)
+summary(mod4)
+y_hat_4 <- predict(mod4, test_set)
+pred_error_4 <- mean((y_hat_4 - y_true)^2)
+pred_error_4
+
+
+```
+
+###  Questions: 
+1. Compare the models above. Which one is best for prediction? Are there other considerations you would consider when choosing a model? 
+2. Try on your own: choose different number you like in "set.seed()" function, and re-run the procedure above. Which one is better based on your own results?
+
+##  K-fold Cross Validation
+One-time sample-splitting results above highly depend on the random selection of the training and test set. K-fold Cross Validation is a procedure to alleviate such randomness. Besides, computationally K-fold Cross Validation is much more feasible than leave-one-out Cross Validation (LOOCV).
+
+In the K-fold Cross Validation, here we set K=5. which means we split the data into 5 qual sized subsets. Then for each k=1,...,5, hold out the $k$th subset and train the model based on the other 4 subsets, calculate $k$th fold mean square error (MSE) as $MSE_k$. Finally optain the total MSE by averaging $MSE_k, k=1,...,5$.
+
+K-fold Cross Validation can be done manually, but can also be implemented using "glm" functions. 
+
+```{r}
+library("boot")
+#fit model 1 with age and area
+mod_cv_1 <- glm(log(price) ~ age + area, data = housing_data)
+summary(mod_cv_1)
+err_cv_1 <- cv.glm(housing_data, mod_cv_1, K=5)$delta[1]
+err_cv_1
+
+#fit model 2 with age, area and lot
+mod_cv_2 <- glm(log(price) ~ age + area + lot, data = housing_data)
+summary(mod_cv_2)
+err_cv_2 <- cv.glm(housing_data, mod_cv_2, K=5)$delta[1]
+err_cv_2
+```
+
+###  Questions: 
+* Use ``names(housing_data)'' to see all the possible covariates you could use.
+* Implement 5-fold cross-validation again to choose the covariates in housing_data that you believe might be associated with the house price. Fit new model and compare the error with the results above. Can you find a better one? Given the set of covariates, can you try to search through all possible models to find the best one? 
+
+#  Penalized Scores
+Cross validation can be computationally expensive, since it requires refitting the model on many different ``test sets.'' On Wednesday, we will discuss potential alternatives to cross validation which don't require sample splitting and only fit the model once. In particular, they assign a score to each model, but explicitly include a penalty for more complex models. In particular, the two scores we will discuss are AIC (Akaike information criterion) and BIC (Bayesian information criterion).
+
+1. $R^2$ measures how well the fitted model predicts the data it was fitted on, and will always increase when we include additional covariates. 
+
+2. Adjusted $R^2$ add adjustment to penalize for increasing model complexity, but it is still not good enough. 
+
+3. AIC, BIC require model assumptions to be theoretically grounded, but work
+well empirically even when the assumptions don’t hold. 
+
+Penalized Scores are calculated based on the whole dataset. Next we will use 3 models to compare the choice of the "best" one among three using different model selection criteria. Similar to golf, when R calculates AIC and BIC, a smaller score indicates a better model.
+
+```{r}
+#Create variables to store the criterion results from different models
+r_squared <- rep(0,3) 
+adj_r_squared <- rep(0,3)
+aic <- rep(0,3)
+bic <- rep(0,3)
+cv_error <- rep(0,3)
+
+#fit model 1 with age and area
+model1 <- lm(log(price) ~ age + area, data = housing_data)
+summary(model1)
+sum1 <- summary(model1)
+r_squared[1] <- sum1$r.squared
+adj_r_squared[1] <- sum1$adj.r.squared
+aic[1] <- AIC(model1)
+bic[1] <- BIC(model1)
+
+model1_cv <- glm(log(price) ~ age + area, data = housing_data)
+cv_error[1] <- cv.glm(housing_data, model1_cv, K=5)$delta[1]
+
+#fit model 2 with age, area and lot
+model2 <- lm(log(price) ~ age + area + lot, data = housing_data)
+summary(model2)
+sum2 <- summary(model2)
+r_squared[2] <- sum2$r.squared
+adj_r_squared[2] <- sum2$adj.r.squared
+aic[2] <- AIC(model2)
+bic[2] <- BIC(model2)
+
+model2_cv <- glm(log(price) ~ age + area + lot, data = housing_data)
+cv_error[2] <- cv.glm(housing_data, model2_cv, K=5)$delta[1]
+
+#fit model 3 with age, area, lot and ac
+model3 <- lm(log(price) ~ age + area + lot + ac, data = housing_data)
+summary(model3)
+sum3 <- summary(model3)
+r_squared[3] <- sum3$r.squared
+adj_r_squared[3] <- sum3$adj.r.squared
+aic[3] <- AIC(model3)
+bic[3] <- BIC(model3)
+
+model3_cv <- glm(log(price) ~ age + area + lot + ac, data = housing_data)
+cv_error[3] <- cv.glm(housing_data, model3_cv, K=5)$delta[1]
+
+#compare three models
+name = c('model1', 'model2', 'model3')
+rbind(name, r_squared, adj_r_squared, aic, bic, cv_error)
+```
+
+#### Questions
+1. Compare the different criterions above, which model do you think is the best?
+
+2. Suppose you have chosen the best one among the three, is that possible we could find a better one other than these three models? 
+
+
+
