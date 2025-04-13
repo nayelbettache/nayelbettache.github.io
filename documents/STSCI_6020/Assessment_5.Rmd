@@ -1,16 +1,14 @@
 ---
-title: "Module 5 Assessment"
-author: "Include your name"
-date: ""
-output: pdf_document
+output:
+  pdf_document: default
+  html_document: default
 ---
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # Instructions
-Please submit the markdown file and compiled pdf to canvas before Apr 22 at 11:59pm. For this assignment, you can discuss with classmates, but please at least attempt to go through it individually first so that you can see what you understand or don't understand. Ultimately, the final product you turn in should be your own work. So you can discuss questions with classmates, but your answers should be written in your own words.   
+Please submit the markdown file and compiled pdf to canvas before Apr 16 at 11:59pm. For this assignment, you can discuss with classmates, but please at least attempt to go through it individually first so that you can see what you understand or don't understand. Ultimately, the final product you turn in should be your own work. So you can discuss questions with classmates, but your answers should be written in your own words.   
 
 # Intro
 We will be examining data from "Novel Machine-Learning Model for Estimating Construction Costs Considering Economic Variables and Indexes" by Rafiei and Adeli (2018, Journal of Construction Engineering and Management) which can be accessed at:
