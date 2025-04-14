@@ -1,0 +1,236 @@
+---
+title: "Lab 9"
+author: ""
+date: ""
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Overview: AIC and BIC
+ As discussed in class, using cross validation to evaluate models is a good way to avoid over fitting models. However, one disadvantage of using cross validation is that it can be computationally expensive. Thus, AIC and BIC serve as good approximations for cross validation error, that are less computationally expensive.
+ 
+ $$AIC= -\frac{n}{2}log(\frac{RSS}{n}) - (p+2)$$
+ 
+ $$BIC= -\frac{n}{2}log(\frac{RSS}{n}) - \frac{log(n)}{2}(p+2)$$
+where $p$ is the number predictors. AIC and BIC both approximate cross validation error by penalizing models for having more estimated coefficients, with BIC having a larger penalty.
+
+## Branch and Bound
+ Consider a linear regression model, where you have a pool of $p$ predictors, and are trying to determine which ones give the best model. Theoretically, the best way to do this would be to consider all $2^p$ models. However, if $p$ is large, then this would be computationally inefficient. One alternative is the branch and bound method. For this method, consider a set of s models $\{M_1,. . ., M_s\}$ which are a sub-set of all the models we are considering. Let $p_{min}$ be the number of covariates in the smallest model in this set, and $M_{sup}$ be a model that contains all of the covariates from any of the models in this set. Thus, for any model $M_s$, $p_s>p_{min}$, and $RSS(M_s) > RSS(M_{sup})$, 
+ 
+ $$AIC(M_s) \leq -\frac{n}{2}log(\frac{RSS(M_{sup})}{n}) - (p_{min}+2)$$
+The same holds for BIC. If we find a model (outside this specific subset of models), with a higher AIC (or BIC) than this upper bound, then we can automatically eliminate $\{M_1,. . ., M_s\}$. To implement this method in $R$, we can use the $regsubsets$ function from the leaps package. In this case, we are going to be fitting a linear model with 10 covariates, $X_1, . . ., X_{10}$ iid $N(0,1)$, but with only four of them having non-zero coefficients.
+
+```{r}
+set.seed(1)
+
+n <- 100
+p <- 10
+
+
+### Covariance of the covariates
+### 1 on the diagonal, all independent
+Sigma <- diag(p)
+
+
+# Randomly generating X matrix
+# rmvnorm generating n random vectors of size p for each observation, 
+#each vector has mean that is 0 vector, and covariance matrix specified above
+X <- mvtnorm::rmvnorm(n, mean = rep(0, p), sigma = Sigma)
+#Specifying Column Names
+colnames(X) <- paste("X", 1:p, sep = "")
+
+# Variables 3, 5, 7 and 10 have non-zero coefficients
+b <- rep(0, p)
+b[c(3, 5,7,10)] <- .5
+Y <- 1 + X %*% b + rnorm(n)
+
+df <- data.frame(Y, X)
+#######
+# You may need to use
+# install.packages("leaps")
+# to install the package if you don't already have it
+
+
+### Branch and Bound using regsubsets 
+### x= covariates, y=response,
+### nvmax= maximum size of model you want to consider, names: names of variables
+
+out_leaps <- leaps::regsubsets(x = X, y = Y, nvmax = p,
+                               names = colnames(X))
+
+sout <- summary(out_leaps)
+sout
+
+
+
+# calculate aic and bic
+# sout$rss gets the rss for each of the best models of a specific size
+# sout$bic computes a version of the negative bic score so you
+# could use that and pick the one that is smallest (i.e., most negative)
+# or you can claculate by hand and pick the one that is largest
+
+aic <- -n/2 * log(sout$rss / n) - (1:p + 2)
+bic <- -n/2 * log(sout$rss / n) - log(n) /2 * (1:p + 2)
+
+which.max(aic)
+which.max(bic)
+
+
+```
+
+
+Questions: 
+* Based on AIC, which model should we choose?  BIC?
+* Which of these criterion results in the better model? 
+* Try the same thing, with n=1000 and n=10000?
+* In general, which criterion yields more parsimonious models? More models closer to the true model?
+
+## Forward and Backwards Stepwise
+While the branch and bound method, will never be more computationally expensive than best subsets, there is no theoretical guarantee that it will be less computationally expensive than best subsets. Thus, for large p (>30), you should consider using forward or backwards stepwise selection.
+ 
+For forward stepwise selection, the model with just the intercept term is your baseline. You then compare all possible models with one covariate. If none of these models have a higher $AIC$ or $BIC$ than the baseline, then you stop. If there is, then you add the covariate has the highest criterion, to your model. Then, you repeat this process, until it is impossible to increase your AIC (or BIC) by adding another covariate, or when you reach the maximum number of covariates .
+ 
+For backwards stepwise selection, the full model with all the covariates is your baseline. You then compare all possible models with one covariate removed. If none of these models have a higher $AIC$ or $BIC$ than the baseline, then you stop. If there is, then you remove the covariate that yields the greatest increase in your criterion to your model. Then, you repeat this process, until it is impossible to increase your AIC (or BIC) by removing another covariate, or when you reach the just-intercept model.
+  
+You can do both forward and backwards selection using the step function.
+  
+```{r}
+## smallest model to consider
+intOnly <- lm(Y~ 1, data = df)
+## largest model to consider
+mod <- lm(Y ~ ., data = df)
+
+
+# Step actually considers the negative AIC, so you would pick the one with the smallest AIC 
+# object is the model to start with (in this case only an intercept)
+# direction specifies whether it should be forward, or backward
+# scope determines the largest model we would consider
+# Trace tells whether or not to print out each step
+# k = 2 uses aic, k = log(n) uses bic
+
+out_forward_aic <- step(object = intOnly, direction = "forward",
+                        scope = formula(mod), trace = T, k = 2)
+
+out_forward_bic <- step(object = intOnly, direction = "forward",
+                        scope = formula(mod), trace = T, k = log(n))
+summary(out_forward_aic)
+summary(out_forward_bic)
+
+# Same, but with backward
+# start with the full model
+out_backward_aic <- step(object = mod, direction = "backward",
+                         scope = formula(mod), trace = T, k = 2)
+out_backward_bic <- step(object = mod, direction = "backward",
+                         scope = formula(mod), trace = T, k = log(n))
+
+# True model 3, 5, 7, 10
+summary(out_backward_aic)
+summary(out_backward_bic)
+
+
+## The forward and backward selected models may not be the same
+## look at the AIC and BIC of the selected models and compare
+
+```
+Questions:
+* Based on AIC/BIC, for forward stepwise which model should we choose? Backwards?
+* Does forward or backward stepwise selection work better in this case?
+* How do these compare to the models done using branch and bound?
+
+
+## Sample splitting for valid p-values
+
+Once you select your model, you may want to test your remaining covariates for statistical significance using t and p-values from your output. However, since the variables you selected were ones that had high values for the test statistic, then the test statistics for your selected model will not follow a t-distribution. To illustrate this problem, we will do an example where we have a linear model with 100 covariates, $X_1, . . ., X_{100}$, each of which has coefficient zero. 
+```{r}
+n=500
+p=100
+##generating X
+X=mvtnorm::rmvnorm(n, rep(0,p), sigma=diag(p))
+## Linear model with only intercept
+Y=rnorm(n)
+
+
+## Suppose you were to do some exploratory analysis and just wanted
+## to examine the covariates by eye
+## In actuality, all the covariates are not related to the dependent variable,
+## but for this specific realization of data, are there any covariates which look related?
+par(mfrow = c(5,5), mar = c(.5, 2, .5, .5))
+for(i in 1:p){
+  ## plot the ith covariate against Y
+  ## xaxt and yaxt = "n" tells R not to plot the x ro y axis
+  # pch =19 means plot filled circles
+  # cex = .5 says to plot smaller circles (default is 1)
+  plot(X[,i], Y, main = i, xaxt = "n", yaxt = "n", pch = 19, cex = .5)
+  mod <- lm(Y~X[,i])$coef
+  # include best fit line in red
+  abline(a = mod[1], b = mod[2], col = "red")
+}
+
+#Fitting full model
+df1=data.frame(Y, X)
+mod=lm(Y~., data=df1)
+
+
+#Histogram of test statistic for Full Model
+hist(coef(summary(mod))[,3], main="Test Statistic Full")
+
+##  Selecting model using forward stepwise
+intOnly <- lm(Y~ 1, data = df1)
+```
+
+```{r, results='hide'}
+out_forward_aic <- step(object = intOnly, direction = "forward",
+                        scope = formula(mod), k = 2)
+```                        
+
+```{r}
+mod_f=summary(out_forward_aic)
+hist(coef(mod_f)[,3], main="Coefficient_Selected")
+```
+
+So, if we use the t- distribution to determine our cutoffs for statistical signficance, then we have a Type 1 Error of 0.46.
+
+```{r}
+#Type 1 Error 
+type_1error=mean(coef(mod_f)[,3]>qt(0.975, n-p -1)| coef(mod_f)[,3]<  -qt(0.975, n-p -1))
+type_1error
+```
+
+To resolve this issue, we split our data set into a training set and a test set. Once we select our model using the training set, we calculate the test statistics using the test set.
+
+```{r}
+## Split the data into two parts, a training set and a test set
+train=X[1:100,]
+test=X[101:200,]
+df_train=data.frame(Y, train)
+df_test=data.frame(X, test)
+
+##  Selecting model using forward stepwise
+## only include the first half of the data (i.e., the training set)
+intOnly <- lm(Y~ 1, data = df_train)
+mod=lm(Y~., data=df_train)
+```
+
+```{r, results='hide'}
+# Forward selection, but only using the training set (which comes through)
+# from using the intOnly object which only used the training set
+out_forward_aic <- step(object = intOnly, direction = "forward",
+                        scope = formula(mod), k = 2)
+```                        
+
+```{r}
+mod_f=lm(out_forward_aic$call, data=df_test)
+hist(coef(summary(mod_f))[,3], main="Coefficient_Selected", breaks=8)
+```
+
+```{r}
+#Type 1 Error 
+type_1error=mean(coef(summary(mod_f))[,3]>qt(0.975, n-p -1)| coef(summary(mod_f))[,3]< -qt(0.975, n-p-1))
+type_1error
+```
+
