@@ -1,0 +1,184 @@
+---
+title: "Lab 10"
+author: ""
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Logistic Regression
+## NFL field goals
+In American football, if you can kick the football through the field goal you will get three points. This is the example we use to illustrate in the lecture. Now we will use this data again to see how to implement Logistic regression and how to interpret your results. 
+```{r}
+fileName <- "https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/fg_data.csv"
+fg_data <- read.csv(fileName)
+head(fg_data)
+```
+There are 4099 observations with the following variables:
+
+* fg_result: was the kick succesful or not
+* distance: distance of the attempt in yards
+* wind: wind speed at time of kick in mph
+* rain: was it raining or not?
+
+We would like to explore the association between fg_result with distance, wind and rain. Since the fg_result is binary variable which only takes value 0 or 1, we will choose the binomial regression to model the NFL data. 
+
+## Mathematical model
+
+$$\theta(x) = E(Y|X=x)$$
+$$log\left(\frac{\theta(x)}{1-\theta(x)}\right)=b_0+b_1x_d + b_2x_w+ b_3x_r$$
+Concepts:
+
+*  Probability of "success": $\theta(x)$, given covariates are $x$, ranging from $(0,1)$.
+*  Odds: $\frac{\theta(x)}{1-\theta(x)}$, ranging from $(0,\infty)$. 
+*  Logit function (log odds): $log\left(\frac{\theta(x)}{1-\theta(x)}\right)$, ranging from $(-\infty,\infty)$. 
+*  Odds ratio: $\frac{{\theta(x_2)}/{1-\theta(x_2)}}{{\theta(x_1)}/{1-\theta(x_1)}}$; $x_1$ and $x_2$ are two individuals.
+
+
+## Implementation in R
+```{r}
+mod_binom <- glm(fg_result ~ distance+ wind + rain,
+           family = "binomial", data = fg_data)
+
+summary(mod_binom)
+```
+
+## Interpretation
+The fitted model is
+$$log\left(\frac{\theta(x)}{1-\theta(x)}\right)=6.8185-0.1174*x_d - 0.0355*x_w-0.4385*x_r$$
+Suppose $x_1$ and $x_2$ are individuals whose covariates values which are the all
+the same, except that the wind is different by 1: $x_{2,w} = x_{1,w} + 1$. 
+$$
+\begin{aligned}
+&\log \left(\frac{\theta\left(\mathbf{x}_{2}\right)}{1-\theta\left(\mathbf{x}_{2}\right)}\right)-\log \left(\frac{\theta\left(\mathbf{x}_{1}\right)}{1-\theta\left(\mathbf{x}_{1}\right)}\right) \\
+=&6.8185-0.1174*x_{2,d} - 0.0355*x_{2,w}-0.4385*x_{2,r} - (6.8185-0.1174*x_{1,d} - 0.0355*x_{1,w}-0.4385*x_{1,r})\\
+=&- 0.0355*x_{2,w}-(- 0.0355*x_{1,w})\\
+=&- 0.0355*(x_{1,w} + 1)+ 0.0355*x_{1,w} \\
+=&- 0.0355
+\end{aligned}
+$$
+Also,
+$$\log \left(\frac{\theta\left(\mathbf{x}_{2}\right)}{1-\theta\left(\mathbf{x}_{2}\right)}\right)-\log \left(\frac{\theta\left(\mathbf{x}_{1}\right)}{1-\theta\left(\mathbf{x}_{1}\right)}\right) = log\left(
+\frac{{\theta(x_2)}/{1-\theta(x_2)}}{{\theta(x_1)}/{1-\theta(x_1)}}\right)\Rightarrow\quad \frac{{\theta(x_2)}/{1-\theta(x_2)}}{{\theta(x_1)}/{1-\theta(x_1)}} = exp(- 0.0355)$$
+
+\textbf{Interpretation}: If observation 1 and observation 2 have all the same covariates, but $x_{1,w}$ increases by 1 unit to $x_{2,w}$, then the odds for $Y_2$ are $exp(- 0.0355)$ times \textbf{smaller} (i.e., multiplicative) than the odds for $Y_1$
+
+#### Questions
+* Based on the results above, interprete the coefficients for distance and rain.  
+* Can you determine "smaller" or "larger" in the interpretation by just looking at the coefficient? 
+* What conclusion can you draw by looking at the p values on the summary?
+
+## Prediction
+If a kick is from 35 yards, the wind speed is 10 mph, and it is not raining, then we estimate that
+$$log\left(\frac{\theta(x)}{1-\theta(x)}\right)=6.8185-0.1174*35 - 0.0355*10-0.4385*0 =2.3545$$
+$$\frac{\theta(x)}{1-\theta(x)} = exp(2.3545)=10.5329$$
+$$P(success) = \theta(x)=\frac{exp(2.3545)}{1+exp(2.3545)} = 0.9133$$
+
+```{r}
+## We can use the predict function to get
+newdata <- data.frame(distance = 35, wind = 10, rain = FALSE)
+
+# on log-odds scale
+predict(object = mod_binom, newdata = newdata, type="link")
+
+# on "probability of success" scale
+predict(object = mod_binom, newdata = newdata, type="response")
+```
+
+## Confidence interval
+```{r}
+# Method 1: Profile likelihood confidence intervals. 
+# Perform better under the small to moderate sample sizes
+confint(mod_binom)
+
+# Method 2: Wald type confidence intervals
+cbind(summary(mod_binom)$coefficients[,1]-1.96*summary(mod_binom)$coefficients[,2], summary(mod_binom)$coefficients[,1]+1.96*summary(mod_binom)$coefficients[,2])
+
+```
+
+
+
+
+
+# Poisson Regression
+In this dataset, we record some information regarding games, including competing teams, game season, how much advantage of one team over another in the game. And the numbers of penalties which occurred in the game is our interest.  
+```{r}
+
+penalty_data <- read.csv("https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/penalty_data.csv")
+head(penalty_data)
+```
+There are 1088 observations with the following variables:
+
+*  game_id: unique id for game 
+*  home_team: name of home team
+*  away_team: name of away team
+*  abs_spread: the absolute value of the betting spread. Roughly speaking, this is the number of points the favored team is expected to win by. A larger value means the game is not expected to be close. We might expect games that are not expected to be close to have less penalties because the refs are less concerned
+*  div_game: Is the game between two teams in the same division (potentially rivals)
+*  reg_playoff: is the game a regular season game or a playoff game
+*  penalty_count: the number of penalties which occurred in the game
+
+## Mathematical model
+Log function
+$$log\left(E(Y|X=x)\right)=b_{0}+b_s*x_s + b_d*x_d+ b_r*x_r$$
+## Implementation in R
+```{r}
+mod_possion <- glm(penalty_count ~ abs_spread + div_game 
+                   + reg_playoff, family = "poisson", data = penalty_data)
+summary(mod_possion)
+```
+
+## Interpretation
+
+The fitted model is
+$$log\left(E[Y|X=x]\right)=2.3460-0.0074*x_s - 0.0390*x_d+ 0.2337*x_r$$
+Suppose $x_1$ and $x_2$ are individuals whose covariates values which are the all
+the same, except that $x_2$ is the game between two teams in the same division, while x_1 is not: $x_{2,d}=1, x_{1,d}=0$. 
+$$
+\begin{aligned}
+&\log \left(E[Y|X=x_2]\right)-\log \left(E[Y|X=x_1]\right) \\
+=&2.3460-0.0074*x_{2, s} - 0.0390*x_{2,d}+ 0.2337*x_{2,r} - (2.3460-0.0074*x_{1,s} - 0.0390*x_{1,d}+ 0.2337*x_{1,r})\\
+=&- 0.0390*x_{2,d} + 0.0390*x_{1,d} \\
+=&- 0.0390*(x_{1,d} + 1)+ 0.0390*x_{1,d}\\
+=&- 0.0390
+\end{aligned}
+$$
+then we also have
+$$\frac{E[Y|X=x_2]}{E[Y|X=x_1]} = exp(- 0.0390)$$
+\textbf{Interpretation}: Suppose two observations have all the same covariate values except differ in div_game ($x_d$) that $x_2$ is the game between two teams in the same division and x_1 is not, then the expected mean for the number of penalties with covariates $x_1$ is $exp(-0.0390)$ times (smaller) the expected mean for the number of penalties with covariates $x_2$.
+
+#### Questions
+
+*  Based on the results above, interprete the coefficients for abs_spread and reg_playoffREG.  
+*  What conclusion can you draw by looking at the p values on the summary?
+
+## Prediction
+If in a game, the number of points the favored team is expected to win by 5(abs_spread), and this team play a regular season game with the rival in the same division, then we estimate that
+$$log(E[Y|X=x])=2.3460-0.0074*5 - 0.0390*1+ 0.2337*1 = 2.5037$$
+$$E[Y|X=x] = exp(2.5037) = 12.22765$$
+This means the expected number of penalties which occurred in this game is around 12 times.
+
+```{r}
+## We can use the predict function
+newdata <- data.frame(abs_spread = 5, div_game = 1, reg_playoff = "REG")
+
+# predicted log of mean 
+predict(object = mod_possion, newdata = newdata, type="link")
+
+# predicted mean
+predict(object = mod_possion, newdata = newdata, type="response")
+```
+
+## Confidence interval
+```{r}
+# Method 1: Profile likelihood confidence intervals. 
+# Perform better under the small to moderate sample sizes
+confint(mod_possion)
+
+# Method 2: Wald type confidence intervals
+cbind(summary(mod_possion)$coefficients[,1]-1.96*summary(mod_possion)$coefficients[,2], summary(mod_possion)$coefficients[,1]+1.96*summary(mod_possion)$coefficients[,2])
+
+```
