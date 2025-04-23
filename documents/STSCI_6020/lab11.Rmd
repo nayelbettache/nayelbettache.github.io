@@ -1,0 +1,302 @@
+---
+title: "Lab 11"
+author: ""
+date: ""
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Poisson Regression
+Last week we considered data on penalties incurred in NFL games. In particular, there are 1088 observations with the following variables:
+
+*  game_id: unique id for game 
+*  home_team: name of home team
+*  away_team: name of away team
+*  abs_spread: the absolute value of the betting spread. Roughly speaking, this is the number of points the favored team is expected to win by. A larger value means the game is not expected to be close. We might expect games that are not expected to be close to have less penalties because the refs are less concerned
+*  div_game: Is the game between two teams in the same division (potentially rivals)
+*  reg_playoff: is the game a regular season game or a playoff game
+*  penalty_count: the number of penalties which occurred in the game
+  
+```{r}
+penalty_data <- read.csv("https://raw.githubusercontent.com/ysamwang/btry6020_sp22/main/lectureData/penalty_data.csv")
+head(penalty_data)
+```
+Since the number of penalties is count data, we fit the following Poisson regression to see if the number of penalties is associated with the covariates we measured.
+```{r}
+mod_possion <- glm(penalty_count ~ abs_spread + div_game 
+                   + reg_playoff, family = "poisson", data = penalty_data)
+summary(mod_possion)
+confint(mod_possion)
+```
+
+We can check the Pearson residuals to see if the variance assumption is satisfied. Although we do not assume constant variance of the residuals, because we have ``standardized'' them the plot below should show roughly constant variance.  
+```{r}
+plot(mod_possion$fitted, resid(mod_possion, type = "pearson"))
+```
+
+It's not obvious that the variance of the residuals changes throughout the range of the fitted values. Nonetheless, we can fit a model which allows for over/underdispersion by specifying a "quasipoisson" family. If we were fitting a binomial, we would specify a "quasibinomial" family. Notice that when allowing for overdispersion, the point estimates do not change, but the standard errors change. This can be thought of somewhat like using robust standard errors. 
+
+```{r}
+mod_possion_quasi <- glm(penalty_count ~ abs_spread + div_game 
+                   + reg_playoff, family = "quasipoisson", data = penalty_data)
+summary(mod_possion_quasi)
+confint(mod_possion)
+```
+If there is no over/under dispersion, the dispersion parameter shold be close to $1$.  We can see from the output above that the estimated overdispersion parameter is close to $1.3$ which is consistent with our earlier plot which did not show obvious overdispersion. 
+
+
+As we discussed in class, we can test whether multiple coefficients are $0$ and compare models using AIC, BIC for glm's in a similar way to what we did for linear models, but replacing the RSS with the log-likelihood. 
+
+```{r}
+AIC(mod_possion)
+BIC(mod_possion)
+
+# fit a model which only includes the absolute value of the spread
+mod_possion1 <- glm(penalty_count ~ abs_spread , family = "poisson", data = penalty_data)
+
+# Test the null hypthesis that the coeffcients of division game and playoffs are 0 
+anova(mod_possion1, mod_possion, test = "Chisq")
+```
+\newpage
+
+# Lasso and Ridge Regression for linear models
+In class, we discussed two ways to fit regressions when the number of covariates
+is large relative to the number of samples. We'll see how to run the code in R and also
+explore some properties of the two procedures. We'll also explore how they can be used for GLMs.
+
+First, let's consider linear regression simulate some data. We sample data with 50 covariates and 
+60 observations. The covariates are correlated with each other. In this
+first setting, the dependent variable is only a function of variables 1, 5, and 10.
+
+```{r}
+set.seed(102)
+# If you haven't installed these packages before, run the install.packages commands below
+# Package which fits LASSO and Ridge Regression very efficiently
+# install.packages("glmnet")
+# Package which samples from multivariate Gaussian
+# install.packages("mvtnorm")
+```
+
+```{r, message=F}
+library(glmnet)
+library(mvtnorm)
+
+# Simulate data
+n <- 60 # number of samples
+p <- 50 # number of covariates
+rho <- .3 # correlation between each variable
+
+# Create covariance matrix with 1's on the diagonal and rho on the off-diagonal
+sigma <- diag(p)
+sigma[abs(row(sigma) - col(sigma)) == 1] <- rho
+
+
+# Sample the covariates which have the covariance matrix we specified
+X <- rmvnorm(n, sigma = sigma)
+
+# the coefficients are 0 everywhere except 1, 5 and 10 where they are .75
+b <- rep(0, p)
+b[c(1, 5, 10)] <- .75
+
+## Try repeating the excercise, but where lots of coefficients matter
+# b[1:30] <- .5
+
+
+# Create the dependent variable as a function of X1, X5, X10 and some random noise
+Y <- X %*% b + rnorm(n)
+
+# We will also create some test data which we will use later
+X.test <- rmvnorm(n * 10, sigma = sigma)
+Y.test <- X.test %*% b + rnorm(n * 10)
+
+```
+
+
+We will use the \texttt{glmnet} package to run the Lasso and Ridge regression procedures.
+Recall that for Lasso, we fix the tuning parameter $\lambda$ and estimate coefficients that minimize
+\[\sum_i (y_i - \hat y)^2 + \lambda \sum_k \vert\hat b_k \vert. \] 
+
+Using this penalty tends to give solutions $\hat b$ that have many zeros. So this can be thought of as a type of model selection. 
+Different values of the tuning parameter $\lambda$ will give different $\hat b$. The \texttt{glmnet} function doesn't require us to specify a single value for $\lambda$, but instead can estimate the coefficients for many values different values of $\lambda$
+
+```{r}
+# x: the covariates
+# y: the dependent variable
+# alpha: specifies whether to fit Lasso (use 1) or Ridge regression (use 0)
+# nlambda: the number of values to try for lambda, glmnet will automatically pick which specific values
+lasso_fit <- glmnet(x = X, y = Y, alpha = 1, nlambda = 100)
+```
+
+
+#### Question
+* How do you expect the estimated $\hat b$ to change as $\lambda$ changes? When $\lambda$ is large, do you expect the estimated coefficients to be larger or smaller? Do you expect there to be more or less zero coefficients as $\lambda$ increases?
+* When would a larger value of $\lambda$ be better? When would a smaller value of $\lambda$ be better?
+* How would you choose $\lambda$?
+
+
+\newpage
+
+The plot below shows the estimated coefficients $\hat b$ as we change the value of the penalty parameter $\lambda$. The value $\log(\lambda)$ is on the horizontal axis, and the vertical axis shows the value of the estimated coefficients. We can see that as $\lambda$ increases, many of the coefficients
+become $0$. Does the behavior as $\lambda$ increases agree with what you thought?
+
+```{r}
+# To get the specific values which  glmnet chose for lambda
+lasso_fit$lambda
+# specifying "lambda" tells R to put log(lambda) on the horizontal axis
+plot(lasso_fit, "lambda")
+```
+
+We can see what the estimated coefficients were at specific choices of $\lambda$. In particular $\log(.05) \approx -3$ and $\log(.2) \approx -1.6$. As we can see in the printouts (and the plot above), when $\lambda = .05$ there are many non-zero coefficients, but some coefficients are estimated to be $0$. But when $\lambda = .2$, we get many more zero coefficients, and only a few coefficients are non-zero.
+
+```{r}
+# we can get the coefficients at a specific choice of lambda
+coef(lasso_fit, s = .05)
+coef(lasso_fit, s = .2)
+```
+
+We can use cross validation to choose an appropriate $\lambda$! You've seen this function in a previous lab
+when doing cross validation for linear regression without the Lasso penalty. In this case, we do 10 fold validation.
+Recall that this means we split the data into 10 equal subsets. First, pick a specific value for $\lambda$. 
+For each subset, we hold it out and fit a lasso regression with the $\lambda$ value
+to the remaining data. We then measure our predictive accuracy on the subset we held out of our data fiting. We can see the $\lambda$ value which has the best cross validation error. For reference, we also look at the mean squared prediction error on the new test data which was not used to fit the model
+```{r}
+# Mostly the same imput as before, but use the function cv.glmnet
+# nfolds: specifies how many folds to use for K fold validation
+cv_lasso_fit <- cv.glmnet(x = X, y = Y, alpha = 1, nlambda = 20, nfolds = 10)
+cv_lasso_fit$lambda.min
+
+plot(cv_lasso_fit)
+
+# The two vertical lines on the plot above are:
+# The value of lambda which has the lowest CV error
+cv_lasso_fit$lambda.min
+# the largest value of lambda which has a CV error within 1 se of the lowest CV error 
+cv_lasso_fit$lambda.1se
+
+## use lasso_fit$lambda.min to get the lambda value with the best cv error
+coef(cv_lasso_fit, s = cv_lasso_fit$lambda.min)
+coef(cv_lasso_fit, s = cv_lasso_fit$lambda.1se)
+
+# the predict function takes the model we fit 'cv_lasso_fit'
+# using the 's' argument, we specify which value of lambda we want to use
+#   we could use either the lambda with the smallest CV error or the largest lambda 
+#   with CV error within 1 se of the lowest CV error
+# newx is the covariates for which we are making predictions. In this case, it's the test data
+lasso_predicted <- predict(cv_lasso_fit, s = cv_lasso_fit$lambda.min, newx = X.test, type = "response")
+# lasso_predicted <- predict(cv_lasso_fit, s = cv_lasso_fit$lambda.1se, newx = X.test)
+
+
+coef(cv_lasso_fit, s = cv_lasso_fit$lambda.min)
+
+
+# We can calculate the mean squared prediction error on test data
+lasso_test_error <- mean((Y.test - lasso_predicted)^2)
+lasso_test_error
+
+```
+
+\newpage
+
+We can now try the same thing, but with ridge regression instead. Recall that ridge regression solve the following problem
+\[\sum_i (y_i - \hat y)^2 + \lambda \sum_k \hat b^2_k . \] 
+
+Everything is the same, except we change 
+\texttt{alpha = 0}. As opposed to above, we now see that the as $\lambda$ increases, the coefficients get smaller
+but do not go to $0$ exactly (though they look very close in the plot). 
+Thus, ridge regression shrinks the values towards $0$, but does not select specific covariates to include/exclude.
+This is one of the major differences between lasso and ridge. Ridge doesn't do model selection (i.e., include/exclude variable) so the fitted model can sometimes be a bit harder to interpret.
+```{r}
+# Change alpha = 0 to do ridge
+ridge_fit <- glmnet(x = X, y = Y, alpha = 0, nlambda = 100)
+plot(ridge_fit, "lambda")
+```
+
+We can also do cross validation to select a value of $\lambda$ and look at the prediction error for ridge regression.
+```{r}
+# Mostly the same input as before
+# Change alpha = 0 to do ridge
+cv_ridge_fit <- cv.glmnet(x = X, y = Y, alpha = 0, nlambda = 100, nfolds = 10)
+plot(cv_ridge_fit)
+
+cv_ridge_fit$lambda.min
+cv_ridge_fit$lambda.1se
+
+## use lasso_fit$lambda.min to get the lambda value with the best cv error
+coef(cv_ridge_fit, s = cv_ridge_fit$lambda.min)
+
+
+# the predict function takes the model we fit 'cv_lasso_fit'
+# using the 's' argument, we specify which value of lambda we want to use
+#   we could use either the lambda with the smallest CV error or the largest lambda 
+#   with CV error within 1 se of the lowest CV error
+# newx is the covariates for which we are making predictions. In this case, it's the test data
+ridge_predicted <- predict(cv_ridge_fit, s = cv_ridge_fit$lambda.min, newx = X.test)
+# ridge_predicted <- predict(cv_ridge_fit, s = cv_ridge_fit$lambda.1se, newx = X.test)
+
+# We can calculate the mean squared prediction error on test data
+ridge_test_error <- mean((Y.test - ridge_predicted)^2)
+ridge_test_error
+
+
+```
+
+
+We can compare the predictive accuracy for this data set and see that the Lasso does better in predictive accuracy. It also identifies a model pretty close to the true model, while ridge doesn't select any specific variables. For comparison, we the predictive accuracy an ordinary linear model (i.e., unpenalized regression).  
+```{r}
+# Error for regression with no penalty
+# when p > n, we can't actually compute this
+
+mean((Y.test - predict(lm(Y~X), newx = X.test))^2)
+# Lasso error
+lasso_test_error
+# Ridge Error
+ridge_test_error
+
+```
+
+#### Questions
+* It looks like Lasso does better than the ridge here, but both do significantly better than unpenalized linear regression. Are there situations where you think ridge might do better than Lasso? Try repeating the experiment, but in the true model, let lots of coefficients be non-zero. What works best in that setting?
+
+\newpage
+
+## Lasso and Ridge Regression for GLMs
+Coming back to GLMs, we can also fit GLMs with the Lasso and Ridge penalties. Instead of trying to minimize the RSS + penalty, we instead try to maximize the log-likelihood - penalty:
+\[\ell(\theta; Y) - \lambda \sum_k \vert \hat b_k \vert \]
+or
+\[\ell(\theta; Y) - \lambda  \sum_k  \hat b^2_k.  \]
+
+In terms of computation, things stay very similar. We can try it out with the Poisson regression we used in lab last week that considered penalties in football games. This time, as covariates we will consider the specific home team and away team for the game. Thus, we might see if games have less penalties when certain teams are playing. This means we have roughly 60 covariates (which are dummy variables). So the number of covariates in this case is quite large. Examining the estimated coefficients, we see that there are some teams which are estimated to have a positive/negative association with the number of penalties.
+
+```{r, message = F}
+## glmnet does not automatically create dummy variables like when you use lm or glm
+## but we can use the model.matrix function to create the matrix with dummy variables
+team_dummies <- model.matrix( ~ . -1, data = data.frame(penalty_data$home_team, penalty_data$away_team))
+
+# Same as before, but now we specify "family = poisson"
+lasso_poisson <- glmnet(y = penalty_data$penalty_count, x = team_dummies, family = "poisson", alpha = 1, nlambda = 100)
+plot(lasso_poisson, "lambda")
+
+# now using cv to pick a lambda
+cv_lasso_poisson <- cv.glmnet(y = penalty_data$penalty_count, x = team_dummies, family = "poisson", alpha = 1, nlambda = 100)
+plot(cv_lasso_poisson)
+
+coef(cv_lasso_poisson, s = cv_lasso_poisson$lambda.min)
+
+```
+
+
+
+\newpage
+
+### Discussion Questions
+* How do you expect the estimated $\hat b$ to change as $\lambda$ changes? When $\lambda$ is large, do you expect the estimated coefficients to be larger or smaller? Do you expect there to be more or less zero coefficients as $\lambda$ increases?
+  - When $\lambda$ is larger, the penalty should push the solution towards smaller values of $\hat b$. Thus, we would expect the estimated coefficients to be smaller. In addition, we would expect there to be more coefficients which are set to zero.  
+* When would a larger value of $\lambda$ be better? When would a smaller value of $\lambda$ be better?
+ - When $n$ is very large relative to $p$, then just using unpenalized regression should do pretty well. Thus, we should expect using a smaller value of lambda should also work okay. When $n$ is small relative to $p$, we expect unpenalized regression should do poorly and shrinking the regression coefficients towards $0$ should be more helpful. Thus, a larger value of $\lambda$ is probably more helpful.    
+* How would you choose $\lambda$?
+  - We use cross-validation!
+* It looks like Lasso does better than the ridge here, but both do significantly better than unpenalized linear regression. Are there situations where you think ridge might do better than Lasso? Try repeating the experiment, but in the true model, let lots of coefficients be non-zero. What works best in that setting?
+  - In this simulation, the true model is one where most coefficients are $0$. Thus lasso does well in this scenario. However, if the true model includes many covariates with non-zero coefficients, we would expect ridge regression to do better because it still includes all the variables.  

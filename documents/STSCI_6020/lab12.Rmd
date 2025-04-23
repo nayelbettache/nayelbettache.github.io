@@ -1,0 +1,432 @@
+---
+title: "Lab 12"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Installing Packages
+```{r}
+# install.packages('ggplot2')
+# install.packages('lattice')
+
+library(ggplot2)
+library(lattice)
+data("mpg")
+
+```
+
+## Background
+
+
+```{r}
+##baseR
+## Make a scatterplot
+plot(x = mpg$displ, y = mpg$hwy, xlab = "Displacement", ylab = "Highway")
+## Add loess curve
+lout <- loess(hwy ~ displ, data = mpg)
+ord_x <- order(lout$x)
+ord_x
+lines(lout$x[ord_x], lout$fitted[ord_x])
+## Add two rug plots
+rug(mpg$displ, side = 1)
+rug(mpg$hwy, side = 2)
+```
+
+We add everything at once.
+```{r}
+##Lattice
+xyplot(hwy ~ displ, data = mpg,
+xlab = "Displacement", ylab = "Highway",
+panel = function(x, y) {
+panel.xyplot(x = x, y = y) ## Add scatterplot
+panel.loess(x = x, y = y, span = 0.75,
+family = "gaussian", degree = 2) ## Add loess curve
+panel.rug(x = x, y = y) ## Add rug plot
+})
+```
+#ggPlot2 Scatterplot
+```{r}
+## ggPlot2
+ggplot(mpg, mapping = aes(x = displ, y = hwy)) + ## set aesthetic maps
+geom_point() + ## apply aesthetic maps to
+## point objects
+geom_smooth(se = FALSE, method = loess) + ## apply to smooth objects
+geom_rug() + ## apply to rug objects
+xlab("Displacement") +
+ylab("Highway")
+
+```
+
+##ggplot2 Foundation
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy))
+#data= data frame you want to use
+#mapping: definition for mapping variables onto aesthetics, almost always use aes,
+#in this case mapping x and y onto x and y coordinates
+```
+
+##Comparing two quantitative variables
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() # indicates scatterplot
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+geom_point()
+```
+
+### Annotating by Categorical Variable
+```{r}
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+geom_point()
+#color=drv, indicates vcolor of points on scatterplot depends on value for drv
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, shape = drv)) +
+geom_point()
+#shape=drv indicates shape of points on scatterplot depends on value for drv
+
+```
+ Exercise: What happens when you map a categorical variable to the size or alpha aesthetics?\
+ Exercise: Consider the penguins dataset that comes from the palmer penguins package:
+```{r}
+#install.packages("palmerpenguins")
+library(palmerpenguins)
+data("penguins")
+```
+Make a plot of bill length vs bill depth, color coding by the species of penguin. What do you notice?
+
+```{r}
+```
+### Annotating by Quantitative Variable
+```{r}
+# Specifying quantitative  variable to determine color of point 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = cty)) +
+geom_point()
+# Specifying quantitative variable to determine shading of point 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, alpha = cty)) +
+geom_point()
+# Specifying quantitative variable to determine size of point 
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, size = cty)) +
+geom_point()
+```
+
+• Exercise:\
+What happens when we map a quantitative variable to the shape aesthetic?\
+
+```{r}
+# Shading dtermined by cty, shape by drv, color by class
+ggplot(data = mpg, mapping = aes(x = displ,
+y = hwy,
+alpha = cty,
+shape = drv,
+color = class)) +
+geom_point()
+
+```
+
+Exercise:
+Using the penguins dataset, plot bill length vs bill depth, annotating by flipper length and
+body mass and species. Do you notice anything?
+
+```{r}
+
+```
+### Smoothing
+```{r}
+### Plotting non-parametric trend line
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_smooth(se = FALSE)
+
+### Coloring different lines for different groups
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+geom_smooth(se = FALSE)
+
+### Different line types for different groups
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, linetype = drv)) +
+geom_smooth(se = FALSE)
+
+### Default loess, plotting OLS ft by specifying method=lm
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_smooth(se = FALSE, method = lm)
+
+### Plotting logistic curves for binary data
+ggplot(data = mtcars, mapping = aes(x = hp, y = vs)) +
+geom_smooth(method = glm, method.args = list(family = "binomial"), se = FALSE)
+```
+
+### Layering Geoms
+```{r}
+### Including both scatterplot and trendline
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point() +
+  geom_smooth(se = FALSE)
+### Can specify aesthetic within particular geom
+ggplot(data = mpg) +
+  geom_point(mapping = aes(x = displ, y = hwy))
+
+
+## Should produce an error, if aesthetic not defined in ggplot, need to respecify for each geometric object
+# ggplot(data = mpg) +
+#   geom_point(mapping = aes(x = displ, y = hwy)) + 
+#   geom_smooth()
+
+### Specify aesthetics needed for all geom objects in ggplot (x,y), place object specific aesthetics within that object (color for geom_point)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+  geom_point(mapping = aes(color = drv)) +
+  geom_smooth(se = FALSE)
+```
+
+• Exercise:\
+From the penguins dataset, try adding the OLS line to the scatterplot of bill length vs bill
+depth. Color code by species, but the OLS line should not depend on species.
+
+```{r}
+
+
+  
+```
+### Overplotting
+```{r}
+## Accounting for overlapping in points by slightly nudging them around, best for small data
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+geom_jitter()
+
+##  Accounting for overlapping by setting all points to have low transparency, best for large data
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+geom_point(alpha = 0.1)
+```
+
+• Exercise:\
+Consider the diamonds dataset from ggplot2. Load it and then plot carat vs price. Account
+for overplotting if possible
+```{r}
+data("diamonds")
+
+```
+
+##One Quantitative Variable
+```{r}
+# Histogram of hwy
+ggplot(data = mpg, mapping = aes(x = hwy)) +
+geom_histogram()
+# Specifying number of bins for histogram
+ggplot(data = mpg, mapping = aes(x = hwy)) +
+geom_histogram(bins = 20)
+#fregpoly- like histogram except lines specify counts
+# color=drv specifies different frequency polygons for different groups, differentiated by color
+ggplot(data = mpg, mapping = aes(x = hwy, color = drv)) +
+geom_freqpoly(bins = 20)
+## y= ..density .., plotting density instead of counts on y-axis
+ggplot(data = mpg, mapping = aes(x = hwy, y = ..density.., color = drv)) +
+geom_freqpoly(bins = 20)
+```
+
+Exercise:\
+Create a frequency polygon of the price of a diamond, color coding by cut.
+```{r}
+
+```
+
+### Density Plot
+```{r}
+###Plotting density (smoothed histogram)
+ggplot(data = mpg, mapping = aes(x = hwy)) +
+geom_density()
+
+### fill=drv, different densities for different values of drv, each filkled with different color
+### alpha=0.3, specifying transparency of fill
+ggplot(data = mpg, mapping = aes(x = hwy, fill = drv)) +
+geom_density(alpha = 0.3)
+```
+
+## One categorical variable, one quantitative variable
+```{r}
+
+```
+
+Exercise:\
+Create a boxplot for cut vs log-price. Does anything surprise you? Can you think of another
+plot that could explain your surprise?
+```{r}
+
+```
+
+## Facets
+```{r}
+## Creates table of scatterplots, one for each level of class
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() +
+facet_wrap( ~ class)
+
+## Creates table of scatterplots, one for each level of class, organized in one row
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() +
+facet_grid(. ~ class)
+
+## Creates table of scatterplots, one for each level of class, organized in one column
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() +
+facet_grid(class ~ .)
+
+## Creates table of scatterplots, one for each combination of class and drv, each row= class, column=drv
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point() +
+facet_grid(class ~ drv)
+```
+
+Exercise: \
+Create a boxplot of cut vs price for each level of color.
+```{r}
+
+```
+
+## Aesthetics for all objects
+
+```{r}
+
+## If you want to specify that all points have color blue, must specify color outside of aes
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy)) +
+geom_point(color = "blue")
+
+#Otherwise R assumes "blue" is categorical variable for which all observations have same value
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = "blue")) +
+geom_point()
+
+# Specifying specific properties for histogram, regardless of variable
+ggplot(data = mpg, mapping = aes(x = hwy)) +
+geom_histogram(fill = "white", color = "black")
+
+```
+
+
+##Themes
+```{r}
+
+## Each them specifies a different way to have background
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_bw()
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_classic()
+
+install.packages("ggthemes")
+library(ggthemes)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_excel()
+
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_fivethirtyeight()
+
+```
+• Exercise:\
+Create a boxplot of cut vs price for each level of color. Make the boxplots all orange and
+use the black and white theme.
+```{r}
+
+```
+
+
+##Scales
+```{r}
+## scale_color_continuous, low= which color associates to smaller values cty, high=which color associates with larger values of cty
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = cty)) +
+geom_point() +
+scale_color_continuous(low = "black", high = "white")
+
+##Scaling x and y axis by log10
+ggplot(data = diamonds, mapping = aes(x = price, y = carat)) +
+scale_y_log10() +
+scale_x_log10() +
+geom_point(alpha = 0.01)
+
+```
+## Colorblind Safe Palettes
+```{r}
+### scale_color_colorblind- gives points colorblind safe colors
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_bw() +
+scale_color_colorblind()
+
+### scale_fill_colorblind- fills density with colorblind safe colors
+ggplot(data = mpg, mapping = aes(x = hwy, fill = drv)) +
+geom_density(alpha = 1/3) +
+theme_bw() +
+scale_fill_colorblind()
+```
+
+##Labels
+```{r}
+## xlab= x-axis label
+## ylab= y-axis label
+## ggtitle= plot title
+## scale_color_colorblind(name = "Car Class")= title for for key
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_bw() +
+scale_color_colorblind(name = "Car Class") +
+xlab("Displacement") +
+ylab("Highway") +
+ggtitle("Displacement vs Highway")
+
+## If you dan't want to use colorblind scale, can use scale_color_discrete, scale_fill_discrete()
+## scale_color_continuous, scale_fill_continuous() (depending on situation)
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_bw() +
+scale_color_discrete(name = "Car Class") +
+xlab("Displacement") +
+ylab("Highway") +
+ggtitle("Displacement vs Highway")
+
+## Set own colors manually
+scale.colors=c(`4`="red", f="blue", r="green")
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = drv)) +
+geom_point() +
+theme_bw() +
+scale_color_manual(name = "Car Drive", values=scale.colors) +
+xlab("Displacement") +
+ylab("Highway") +
+ggtitle("Displacement vs Highway")
+```
+##Saving Plots
+```{r}
+## Storing ggplotobject in variable pl
+ggplot(data = mpg, mapping = aes(x = displ, y = hwy, color = class)) +
+geom_point() +
+theme_bw() +
+scale_color_colorblind() ->
+pl
+
+## Saving plot using ggsave
+## filename= name of file ypu want to save to
+## plot= ggPlot object that you want to put in pdf
+## width and height of plot
+## family= font for labels
+ggsave(filename = "my_first_plot.pdf",
+plot = pl,
+width = 6,
+height = 4,
+family = "Times")
+
+## pdf-opens connection to pdf file
+pdf(file = "my_second_plot.pdf", width = 6, height = 4, family = "Times")
+## prints saved ggPlot object  to pdf file
+print(pl)
+##closes connection
+dev.off()
+```
+
+Exercise:\
+Create a boxplot of cut vs price for each level of color. Make the boxplots all orange and
+use the black and white theme. Save this plot to the output folder using ggsave().
+```{r}
+
+
+```
