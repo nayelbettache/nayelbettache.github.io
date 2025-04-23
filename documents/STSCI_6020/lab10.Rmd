@@ -63,7 +63,7 @@ $$
 $$
 Also,
 $$\log \left(\frac{\theta\left(\mathbf{x}_{2}\right)}{1-\theta\left(\mathbf{x}_{2}\right)}\right)-\log \left(\frac{\theta\left(\mathbf{x}_{1}\right)}{1-\theta\left(\mathbf{x}_{1}\right)}\right) = log\left(
-\frac{{\theta(x_2)}/{1-\theta(x_2)}}{{\theta(x_1)}/{1-\theta(x_1)}}\right)\Rightarrow\quad \frac{{\theta(x_2)}/{1-\theta(x_2)}}{{\theta(x_1)}/{1-\theta(x_1)}} = exp(- 0.0355)$$
+\frac{\theta(x_2)/(1-\theta(x_2))}{\theta(x_1)/(1-\theta(x_1))}\right)\Rightarrow\quad \frac{\theta(x_2)/(1-\theta(x_2))}{\theta(x_1)/(1-\theta(x_1))} = exp(- 0.0355)$$
 
 \textbf{Interpretation}: If observation 1 and observation 2 have all the same covariates, but $x_{1,w}$ increases by 1 unit to $x_{2,w}$, then the odds for $Y_2$ are $exp(- 0.0355)$ times \textbf{smaller} (i.e., multiplicative) than the odds for $Y_1$
 
