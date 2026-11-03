@@ -1,3 +1,6 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-113692533-1"></script>
     <script>
@@ -13,722 +16,371 @@
     <meta name="description" content="Personal Webpage of Nayel Bettache, currently Visiting Assistant Professor at Cornell University. He is working on time series, topic models, random matrix theory and high dimensional statistics.">
     <meta name="keywords" content="Nayel Bettache, PhD, Assistant Professor, Cornell University, Statistics, Time Series, Topic Model, Random Matrix, Research Scientist">
     <meta name="author" content="Nayel Bettache">
-    
+
     <title>Nayel Bettache | Visiting Assistant Professor, Cornell University</title>
 
-    <style>
-        /* Reset and base styles */
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            background-color: #fff;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Mobile-first navigation */
-        .mobile-nav-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 10px;
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
-            background-color: rgba(255, 255, 255, 0.9);
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-
-        .header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 40px 0;
-            text-align: center;
-            position: relative;
-        }
-
-        .profile-section {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-            margin-bottom: 30px;
-        }
-
-        .profile-image {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-
-        .profile-info h1 {
-            margin: 0;
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .profile-info p {
-            margin: 5px 0;
-            opacity: 0.9;
-            font-size: 1.1rem;
-        }
-
-        .contact-info {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-            margin: 20px 0;
-        }
-
-        .social-links {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .social-links a {
-            display: inline-block;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            transition: all 0.3s ease;
-        }
-
-        .social-links a:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        .social-links svg {
-            width: 24px;
-            height: 24px;
-            fill: white;
-        }
-
-        /* Navigation */
-        .navigation {
-            background: #fff;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        .nav-list {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            background: white;
-        }
-
-        .nav-list li {
-            margin: 0;
-        }
-
-        .nav-list a {
-            display: block;
-            padding: 15px 20px;
-            text-decoration: none;
-            color: #555;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border-bottom: 3px solid transparent;
-        }
-
-        .nav-list a:hover {
-            color: #667eea;
-            border-bottom-color: #667eea;
-            background-color: #f8f9fa;
-        }
-
-        /* Main content */
-        .main-content {
-            padding: 40px 0;
-        }
-
-        .section {
-            margin-bottom: 50px;
-            scroll-margin-top: 80px;
-        }
-
-        .section h2 {
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
-            position: relative;
-        }
-
-        .section h2::after {
-            content: '';
-            position: absolute;
-            bottom: -3px;
-            left: 0;
-            width: 50px;
-            height: 3px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .section p {
-            margin-bottom: 15px;
-            text-align: justify;
-            line-height: 1.7;
-        }
-
-        .section ul {
-            padding-left: 0;
-        }
-
-        .section li {
-            margin-bottom: 15px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            list-style: none;
-            border-left: 4px solid #667eea;
-            transition: all 0.3s ease;
-        }
-
-        .section li:hover {
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            transform: translateY(-2px);
-        }
-
-        .teaching-course {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-left-color: #28a745;
-        }
-
-        .publication-item {
-            border-left-color: #dc3545;
-        }
-
-        .award-item {
-            border-left-color: #ffc107;
-        }
-
-        /* Quick links */
-        .quick-links {
-            background: #f8f9fa;
-            padding: 30px 0;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .quick-links-container {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .quick-link {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 20px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .quick-link:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-        .course-link {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 15px 20px;
-            min-width: 280px;
-            border-radius: 15px;
-        }
-
-        .course-icon {
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-        }
-
-        .course-info-btn {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .course-title {
-            font-weight: 700;
-            font-size: 1rem;
-            margin-bottom: 2px;
-        }
-
-        .course-code {
-            font-size: 0.85rem;
-            opacity: 0.9;
-            font-weight: 400;
-        }
-
-        /* Download button */
-        .download-btn {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 12px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .download-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-            color: white;
-            text-decoration: none;
-        }
-
-        /* Footer */
-        .footer {
-            background: #333;
-            color: white;
-            text-align: center;
-            padding: 30px 0;
-            margin-top: 50px;
-        }
-
-        /* Mobile styles */
-        @media (max-width: 768px) {
-            .mobile-nav-toggle {
-                display: block;
-            }
-
-            .profile-section {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .profile-info h1 {
-                font-size: 2rem;
-            }
-
-            .nav-list {
-                flex-direction: column;
-                position: fixed;
-                top: 0;
-                right: -100%;
-                width: 80%;
-                max-width: 300px;
-                height: 100vh;
-                background: white;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.1);
-                transition: right 0.3s ease;
-                padding-top: 80px;
-                overflow-y: auto;
-            }
-
-            .nav-list.active {
-                right: 0;
-            }
-
-            .nav-list a {
-                padding: 20px 30px;
-                border-bottom: 1px solid #eee;
-                border-left: 3px solid transparent;
-            }
-
-            .nav-list a:hover {
-                border-left-color: #667eea;
-                border-bottom-color: #eee;
-            }
-
-            .section h2 {
-                font-size: 1.5rem;
-            }
-
-            .container {
-                padding: 0 15px;
-            }
-
-            .header {
-                padding: 30px 0;
-            }
-
-            .main-content {
-                padding: 30px 0;
-            }
-
-            .section {
-                margin-bottom: 40px;
-            }
-
-            .social-links {
-                gap: 15px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-info h1 {
-                font-size: 1.8rem;
-            }
-
-            .section li {
-                padding: 12px;
-            }
-
-            .social-links {
-                gap: 10px;
-            }
-
-            .social-links a {
-                padding: 8px;
-            }
-
-            .course-link {
-                min-width: 100%;
-                flex-direction: column;
-                text-align: center;
-                gap: 8px;
-            }
-
-            .course-info-btn {
-                align-items: center;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Loading animation */
-        .fade-in {
-            animation: fadeIn 0.6s ease-in;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;1,400;1,600&display=swap">
+    <link rel="stylesheet" href="stylesheets/site.css">
 </head>
 <body>
-    <!-- Mobile Navigation Toggle -->
-    <button class="mobile-nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
-        ☰
-    </button>
+    <a class="skip-link" href="#main">Skip to content</a>
 
-    <!-- Header Section -->
-    <header class="header">
-        <div class="container">
-            <div class="profile-section fade-in">
-                <img src="images/profile.jpg" alt="Nayel Bettache" class="profile-image">
-                <div class="profile-info">
-                    <h1>Nayel Bettache, PhD</h1>
-                    <p><strong>Visiting Assistant Professor</strong></p>
-                    <p>Cornell University - Department of Statistics and Data Science</p>
-                </div>
-            </div>
-            
-            <div class="contact-info fade-in">
-                <p><strong>Office:</strong> Surge B 158, 220 Tower Road, Ithaca, NY 14853</p>
-                <p><strong>Email:</strong> nbb45@cornell.edu</p>
-            </div>
-
-            <div class="social-links fade-in">
-                <a href="https://scholar.google.com/citations?user=ZNhV1QYAAAAJ&hl=en" target="_blank" aria-label="Google Scholar">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm0-24L2 9h4v10a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9h4L12 0Z"/>
-                    </svg>
-                </a>
-                <a href="https://github.com/nayelbettache" target="_blank" aria-label="GitHub">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                    </svg>
-                </a>
-                <a href="https://www.linkedin.com/in/nayel-bettache" target="_blank" aria-label="LinkedIn">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
-                    </svg>
-                </a>
-                <a href="mailto:nbb45@cornell.edu" aria-label="Email">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-.904.732-1.636 1.636-1.636h.379L12 13.269l9.985-9.448h.379c.904 0 1.636.732 1.636 1.636z"/>
-                    </svg>
-                </a>
-            </div>
+    <header class="topbar">
+        <div class="topbar-inner">
+            <a class="brand" href="index.html">Nayel Bettache</a>
+            <nav class="sections" aria-label="Sections">
+                <a href="#about-me">About</a>
+                <a href="#publications">Publications</a>
+                <a href="#academic">Academia</a>
+                <a href="#industry">Industry</a>
+                <a href="#education">Education</a>
+                <a href="#teaching">Teaching</a>
+                <a href="#grants">Talks</a>
+            </nav>
         </div>
     </header>
 
-     <!-- Navigation -->
-     <nav class="navigation">
-        <div class="container">
-            <ul class="nav-list" id="navList">
-                <li><a href="#about-me">About Me</a></li>
-                <li><a href="#academic">Academia</a></li>
-                <li><a href="#industry">Industry</a></li>
-                <li><a href="#education">Education</a></li>
-                <li><a href="#publications">Publications</a></li>
-                <li><a href="#teaching">Teaching</a></li>
-                <!-- <li><a href="#grants">Grants & Conferences</a></li> -->
-            </ul>
-        </div>
-    </nav>
+    <main id="main" class="page">
 
-    <!-- Quick Course Links -->
-    <section class="quick-links">
-        <div class="container">
-            <h3 style="text-align: center; margin-bottom: 20px; color: #333; font-size: 1.2rem;">Current Courses - Spring 2025</h3>
-            <div class="quick-links-container fade-in">
-                <a href="STSCI2120.html" class="quick-link course-link">
-                    <span class="course-icon">📊</span>
-                    <div class="course-info-btn">
-                        <div class="course-title">Intro to R Programming</div>
-                        <div class="course-code">STSCI 2120/5120</div>
-                    </div>
-                </a>
-                <a href="STSCI3740.html" class="quick-link course-link">
-                    <span class="course-icon">🤖</span>
-                    <div class="course-info-btn">
-                        <div class="course-title">Machine Learning</div>
-                        <div class="course-code">STSCI 3740/5740</div>
-                    </div>
-                </a>
-                <a href="STSCI6020.html" class="quick-link course-link">
-                    <span class="course-icon">📈</span>
-                    <div class="course-info-btn">
-                        <div class="course-title">Statistical Methods II</div>
-                        <div class="course-code">STSCI 6020</div>
-                    </div>
-                </a>
+        <!-- Introduction -->
+        <header class="intro">
+            <img src="images/profile-web.jpg" alt="Nayel Bettache" class="portrait" width="480" height="480">
+            <div>
+                <h1>Nayel Bettache, PhD</h1>
+                <p class="role">Visiting Assistant Professor</p>
+                <p class="affil">Cornell University – Department of Statistics and Data Science</p>
+
+                <dl class="facts">
+                    <dt>Office</dt>
+                    <dd>Surge B 158, 220 Tower Road, Ithaca, NY 14853</dd>
+                    <dt>Email</dt>
+                    <dd><a href="mailto:nbb45@cornell.edu">nbb45@cornell.edu</a></dd>
+                </dl>
+
+                <div class="actions">
+                    <ul class="profiles">
+                        <li>
+                            <a href="https://scholar.google.com/citations?user=ZNhV1QYAAAAJ&hl=en" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 24a7 7 0 1 1 0-14 7 7 0 0 1 0 14Zm0-24L2 9h4v10a4 4 0 0 0 4 4h4a4 4 0 0 0 4-4V9h4L12 0Z"/></svg>
+                                Google Scholar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://github.com/nayelbettache" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                                GitHub
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://www.linkedin.com/in/nayel-bettache" target="_blank" rel="noopener">
+                                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+                                LinkedIn
+                            </a>
+                        </li>
+                    </ul>
+                    <a href="documents/CV_Bettache_Nayel_Mar25.pdf" class="button primary" target="_blank" rel="noopener">
+                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 3h2v10.17l3.59-3.58L18 11l-6 6-6-6 1.41-1.41L11 13.17V3Zm-7 16h16v2H4v-2Z"/></svg>
+                        Download Curriculum Vitae
+                    </a>
+                </div>
             </div>
-        </div>
-    </section>
+        </header>
 
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <section id="about-me" class="section fade-in">
-                <h2>About Me</h2>
-                <p>I am a Jacob Wolfzwitz Visiting Assistant Professor at <a href="https://stat.cornell.edu/" target="_blank">Cornell University</a>.</p>
-                
-                <p>I hold a PhD in Mathematical Statistics from <a href="https://crest.science/" target="_blank">CREST</a> and <a href="https://www.ip-paris.fr/" target="_blank">Institut Polytechnique de Paris</a>. My supervisor was <a href="https://cbutucea.perso.math.cnrs.fr/" target="_blank">Cristina Butucea</a>. My manuscript is available <a href="https://theses.hal.science/tel-04679266" target="_blank">here</a> and you can find the slides from the defense <a href="documents/Slides_soutenance.pdf" target="_blank">here</a>.</p>
-                
+        <!-- About -->
+        <section id="about-me" class="row">
+            <h2>About Me</h2>
+            <div class="body prose">
+                <p>I am a Jacob Wolfzwitz Visiting Assistant Professor at <a href="https://stat.cornell.edu/" target="_blank" rel="noopener">Cornell University</a>.</p>
+
+                <p>I hold a PhD in Mathematical Statistics from <a href="https://crest.science/" target="_blank" rel="noopener">CREST</a> and <a href="https://www.ip-paris.fr/" target="_blank" rel="noopener">Institut Polytechnique de Paris</a>. My supervisor was <a href="https://cbutucea.perso.math.cnrs.fr/" target="_blank" rel="noopener">Cristina Butucea</a>. My manuscript is available <a href="https://theses.hal.science/tel-04679266" target="_blank" rel="noopener">here</a> and you can find the slides from the defense <a href="documents/Slides_soutenance.pdf" target="_blank" rel="noopener">here</a>.</p>
+
                 <p>My research delves into the foundational aspects of mathematical statistics and machine learning, placing a special emphasis on crafting practical and efficient learning methods with provable theoretical guarantees. I am particularly interested in time series, random matrix theory and high dimensional estimation problems.</p>
-            </section>
+            </div>
+        </section>
 
-            <section id="academic" class="section fade-in">
-                <h2>Academic Appointments</h2>
-                <ul>
-                    <li><strong><a href="https://stat.cornell.edu/people/faculty/nayel-bettache" target="_blank">Visiting Assistant Professor</a></strong>, Cornell University, <em>Department of Statistics and Data Science</em>, Since Aug. 2024.</li>
-                    <li><strong>Visiting Researcher</strong>, Harvard University, <em>Invited by <a href="https://www.tracyke.net/" target="_blank">Tracy Ke</a> </em>, April 2023.</li>
-                    <li><strong>Visiting Researcher</strong>, Cornell University, <em>Invited by <a href="https://bunea.stat.cornell.edu/" target="_blank">Florentina Bunea</a></em>, May 2023.</li>
-                    <li><strong>Graduate Researcher</strong>, CREST-ENSAE, <em>Supervised by <a href="https://cbutucea.perso.math.cnrs.fr/" target="_blank">Cristina Butucea</a></em>, Jan. 2023 - Aug. 2023.</li>
-                    <li><strong>Research Intern</strong>, CREST-ENSAE, <em>Supervised by Cristina Butucea</em>, Jun. 2018 - Sep. 2018.</li>
+        <!-- Course pages -->
+        <section class="row" aria-labelledby="courses-heading">
+            <h2 id="courses-heading">Current Courses<span class="sub">Spring 2025</span></h2>
+            <div class="body">
+                <ul class="course-links">
+                    <li>
+                        <a href="STSCI2120.html">
+                            <span class="title">Intro to R Programming</span>
+                            <span class="code">STSCI 2120/5120</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="STSCI3740.html">
+                            <span class="title">Machine Learning</span>
+                            <span class="code">STSCI 3740/5740</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="STSCI6020.html">
+                            <span class="title">Statistical Methods II</span>
+                            <span class="code">STSCI 6020</span>
+                        </a>
+                    </li>
                 </ul>
-            </section>
+            </div>
+        </section>
 
-            <section id="industry" class="section fade-in">
-              <h2>Industrial Experience</h2>
-              <ul>
-                  <li><strong>Quantitative Research Intern</strong>, BNP Paribas (<em>London</em>), <em>Under the supervision of Philippe Amzelek</em>, Jul. 2020 – Dec. 2020.</li>
-                  <li><strong>Quantitative Research Intern</strong>, Advestis (<em>Paris</em>), <em>Under the supervision of Christophe Geissler</em>, Jun. 2019 - Oct. 2019.</li>
-              </ul>
-          </section>
-
-            <section id="education" class="section fade-in">
-                <h2>Education</h2>
-                <ul>
-                    <li><strong>PhD in Mathematical Statistics</strong>, <a href="https://www.ip-paris.fr/" target="_blank">Institut Polytechnique de Paris</a>, Sep. 2021 - Jul. 2024.</li>
-                    <li><strong>M.Sc Statistics and Learning</strong>, <a href="https://www.ensae.fr/en/education/ingenieur-ensae-program/third-year/data-science-statistics-and-learning" target="_blank">ENSAE IP Paris</a>, Sep. 2017 - Jul. 2020.</li>
-                    <li><strong>M.Sc Data Science</strong>, <a href="https://www.ip-paris.fr/education/masters/mention-mathematiques-appliquees-statistique/master-year-2-data-science" target="_blank">École Polytechnique</a>, Sep. 2019 - Jul. 2020.</li>
-                    <li><strong>Classes Préparatoires MPSI-MP</strong>, <a href="https://www.auxlazaristeslasalle.fr/nos-formations-superieures/lyon-5eme-saint-barthelemy-cpge-concours/" target="_blank">Institution Aux Lazaristes</a>, Sep. 2014 - Jul. 2017.</li>
-                </ul>
-            </section>
-
-            <section id="publications" class="section fade-in">
-                <h2>Publications</h2>
-                
+        <!-- Publications -->
+        <section id="publications" class="row">
+            <h2>Publications</h2>
+            <div class="body">
                 <h3>Preprints</h3>
-                <ul>
-                    <li class="publication-item">
-                        <a href="https://arxiv.org/abs/2412.17749" target="_blank">Bivariate Matrix-valued Linear Regression (BMLR): Finite-sample performance under Identifiability and Sparsity Assumptions</a><br>
-                        N.B.<br>
-                        Preprint ArXiv, 2024.
+                <ul class="pubs">
+                    <li>
+                        <a class="title" href="https://arxiv.org/abs/2412.17749" target="_blank" rel="noopener">Bivariate Matrix-valued Linear Regression (BMLR): Finite-sample performance under Identifiability and Sparsity Assumptions</a>
+                        <span class="authors">N.B.</span>
+                        <span class="venue">Preprint ArXiv, 2024.</span>
                     </li>
                 </ul>
 
                 <h3>Journal</h3>
-                <ul>
-                    <li class="publication-item">
-                        <a href="https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-19/issue-1/Low-rank-regularization-in-two-sided-matrix-regression/10.1214/25-EJS2360.full" target="_blank">Low-rank regularization in two-sided matrix regression</a><br>
-                        N.B., C. Butucea.<br>
-                        Accepted by <strong>Electronic Journal of Statistics (EJS)</strong>, 2025.
+                <ul class="pubs">
+                    <li>
+                        <a class="title" href="https://projecteuclid.org/journals/electronic-journal-of-statistics/volume-19/issue-1/Low-rank-regularization-in-two-sided-matrix-regression/10.1214/25-EJS2360.full" target="_blank" rel="noopener">Low-rank regularization in two-sided matrix regression</a>
+                        <span class="authors">N.B., C. Butucea.</span>
+                        <span class="venue">Accepted by <em>Electronic Journal of Statistics (EJS)</em>, 2025.</span>
                     </li>
-                    <li class="publication-item">
-                        <a href="https://www.sciencedirect.com/science/article/abs/pii/S0047259X21001615" target="_blank">Fast nonasymptotic testing and support recovery for large sparse Toeplitz covariance matrices</a><br>
-                        N.B, C.Butucea, M.Sorba<br>
-                        Accepted by <strong>Journal of Multivariate Analysis (JMVA)</strong>, 2022.
-                    </li>
-                </ul>
-            </section>
-
-            <section id="teaching" class="section fade-in">
-                <h2>Teaching</h2>
-                
-                <h3><a href="https://stat.cornell.edu" target="_blank">Cornell University</a> - Visiting Assistant Professor</h3>
-                <ul>
-                    <li class="teaching-course">
-                        <a href="STSCI6020.html">Statistical Methods II, STSCI 6020</a><br>
-                        PhD Level - <em>Spring 2025</em><br>
-                        <a href="https://classes.cornell.edu/browse/roster/SP25/class/BTRY/6020" target="_blank">Class Roster</a>
-                    </li>
-                    <li class="teaching-course">
-                        <a href="STSCI2120.html">Introduction to R Programming, STSCI 2120/5120</a><br>
-                        Undergraduate and Graduate - <em>Fall 2024</em><br>
-                        <a href="https://classes.cornell.edu/browse/roster/FA24/class/STSCI/2120" target="_blank">Class Roster</a>
-                    </li>
-                    <li class="teaching-course">
-                        <a href="STSCI3740.html">Data Mining and Machine Learning, STSCI 3740/5740</a><br>
-                        Undergraduate and Graduate - <em>Fall 2024</em><br>
-                        <a href="https://classes.cornell.edu/browse/roster/FA24/class/STSCI/3740" target="_blank">Class Roster</a>
+                    <li>
+                        <a class="title" href="https://www.sciencedirect.com/science/article/abs/pii/S0047259X21001615" target="_blank" rel="noopener">Fast nonasymptotic testing and support recovery for large sparse Toeplitz covariance matrices</a>
+                        <span class="authors">N.B, C.Butucea, M.Sorba</span>
+                        <span class="venue">Accepted by <em>Journal of Multivariate Analysis (JMVA)</em>, 2022.</span>
                     </li>
                 </ul>
+            </div>
+        </section>
 
-                <h3><a href="https://www.ensae.fr/en" target="_blank">ENSAE</a> - Teaching Assistant</h3>
-                <p><em>Honored in the top 1% of teachers for exceptional pedagogical quality.</em></p>
-                <ul>
-                    <li class="teaching-course">Probability Theory - Undergraduate (L3) - Professor: <a href="https://vebrunel.fr/" target="_blank">Victor-Emmanuel Brunel</a> - <em>Spring 2024 & 2023</em></li>
-                    <li class="teaching-course">Measure Theory - Undergraduate (L3) - Professor: <a href="https://cbutucea.perso.math.cnrs.fr" target="_blank">Cristina Butucea</a> - <em>Fall 2023 & 2022</em></li>
-                    <li class="teaching-course">Optimization - Undergraduate (L3) - Professor: <a href="https://guillaume-lecue.faculty.essec.edu/" target="_blank">Guillaume Lecué</a> - <em>Spring 2023 & 2022</em></li>
-                    <li class="teaching-course">Statistical Learning - Graduate (M2) - Professor: <a href="https://cbutucea.perso.math.cnrs.fr" target="_blank">Cristina Butucea</a> - <em>Fall 2022 & 2021</em></li>
-                    <li class="teaching-course">Machine Learning - Graduate (M1) - Professor: <a href="https://www.ensae.fr/faculty/670-vianney-perchet" target="_blank">Vianney Perchet</a> - <em>Spring 2022</em></li>
-                    <li class="teaching-course">Linear Algebra - Undergraduate (L3) - Professor: <a href="https://lerasle.perso.math.cnrs.fr/" target="_blank">Mathieu Lerasle</a> - <em>Fall 2021</em></li>
-                    <li class="teaching-course">Numerical Methods - Undergraduate (L3) - Professor: <a href="https://www.ljll.fr/membre/kaber-sidi-mahmoud/" target="_blank">Sidi Mahmoud Kaber</a> - <em>Spring 2021</em></li>
-                    <li class="teaching-course">Introduction to Statistics - Undergraduate (L3) - Professor: <a href="https://www.ensae.fr/en/courses/475" target="_blank">Mathieu Lerasle</a> - <em>Spring 2021</em></li>
+        <!-- Academic appointments -->
+        <section id="academic" class="row">
+            <h2>Academic Appointments</h2>
+            <div class="body">
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what"><a href="https://stat.cornell.edu/people/faculty/nayel-bettache" target="_blank" rel="noopener">Visiting Assistant Professor</a></span>
+                        <span class="when">Since Aug. 2024</span>
+                        <span class="detail">Cornell University, <em>Department of Statistics and Data Science</em></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Visiting Researcher</span>
+                        <span class="when">April 2023</span>
+                        <span class="detail">Harvard University, <em>Invited by <a href="https://www.tracyke.net/" target="_blank" rel="noopener">Tracy Ke</a></em></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Visiting Researcher</span>
+                        <span class="when">May 2023</span>
+                        <span class="detail">Cornell University, <em>Invited by <a href="https://bunea.stat.cornell.edu/" target="_blank" rel="noopener">Florentina Bunea</a></em></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Graduate Researcher</span>
+                        <span class="when">Jan. 2023 – Aug. 2023</span>
+                        <span class="detail">CREST-ENSAE, <em>Supervised by <a href="https://cbutucea.perso.math.cnrs.fr/" target="_blank" rel="noopener">Cristina Butucea</a></em></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Research Intern</span>
+                        <span class="when">Jun. 2018 – Sep. 2018</span>
+                        <span class="detail">CREST-ENSAE, <em>Supervised by Cristina Butucea</em></span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Industry -->
+        <section id="industry" class="row">
+            <h2>Industrial Experience</h2>
+            <div class="body">
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what">Quantitative Research Intern</span>
+                        <span class="when">Jul. 2020 – Dec. 2020</span>
+                        <span class="detail">BNP Paribas (<em>London</em>), <em>Under the supervision of Philippe Amzelek</em></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Quantitative Research Intern</span>
+                        <span class="when">Jun. 2019 – Oct. 2019</span>
+                        <span class="detail">Advestis (<em>Paris</em>), <em>Under the supervision of Christophe Geissler</em></span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Education -->
+        <section id="education" class="row">
+            <h2>Education</h2>
+            <div class="body">
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what">PhD in Mathematical Statistics</span>
+                        <span class="when">Sep. 2021 – Jul. 2024</span>
+                        <span class="detail"><a href="https://www.ip-paris.fr/" target="_blank" rel="noopener">Institut Polytechnique de Paris</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">M.Sc Statistics and Learning</span>
+                        <span class="when">Sep. 2017 – Jul. 2020</span>
+                        <span class="detail"><a href="https://www.ensae.fr/en/education/ingenieur-ensae-program/third-year/data-science-statistics-and-learning" target="_blank" rel="noopener">ENSAE IP Paris</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">M.Sc Data Science</span>
+                        <span class="when">Sep. 2019 – Jul. 2020</span>
+                        <span class="detail"><a href="https://www.ip-paris.fr/education/masters/mention-mathematiques-appliquees-statistique/master-year-2-data-science" target="_blank" rel="noopener">École Polytechnique</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Classes Préparatoires MPSI-MP</span>
+                        <span class="when">Sep. 2014 – Jul. 2017</span>
+                        <span class="detail"><a href="https://www.auxlazaristeslasalle.fr/nos-formations-superieures/lyon-5eme-saint-barthelemy-cpge-concours/" target="_blank" rel="noopener">Institution Aux Lazaristes</a></span>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Teaching -->
+        <section id="teaching" class="row">
+            <h2>Teaching</h2>
+            <div class="body">
+                <h3><a href="https://stat.cornell.edu" target="_blank" rel="noopener">Cornell University</a> – Visiting Assistant Professor</h3>
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what"><a href="STSCI6020.html">Statistical Methods II, STSCI 6020</a></span>
+                        <span class="when">Spring 2025</span>
+                        <span class="detail">PhD Level – <a href="https://classes.cornell.edu/browse/roster/SP25/class/BTRY/6020" target="_blank" rel="noopener">Class Roster</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="STSCI2120.html">Introduction to R Programming, STSCI 2120/5120</a></span>
+                        <span class="when">Fall 2024</span>
+                        <span class="detail">Undergraduate and Graduate – <a href="https://classes.cornell.edu/browse/roster/FA24/class/STSCI/2120" target="_blank" rel="noopener">Class Roster</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="STSCI3740.html">Data Mining and Machine Learning, STSCI 3740/5740</a></span>
+                        <span class="when">Fall 2024</span>
+                        <span class="detail">Undergraduate and Graduate – <a href="https://classes.cornell.edu/browse/roster/FA24/class/STSCI/3740" target="_blank" rel="noopener">Class Roster</a></span>
+                    </li>
                 </ul>
 
-                <h3><a href="https://nayelbettache.wixsite.com/nayelprepa" target="_blank">Nayel Prepa</a> - Founder</h3>
-                <p><em>Received a stellar 100% 5-star rating on <a href="https://fr.trustpilot.com/review/nayelprepa.fr" target="_blank">Trustpilot</a>.</em></p>
-                <ul>
-                    <li class="award-item">Founding a company democratising access to high-quality mathematics education for undergraduate students.</li>
-                    <li class="award-item">Publishing 80 videos, garnered 7.5k subscribers and amassed over 315k views on <a href="https://www.youtube.com/@nayelprepa" target="_blank">YouTube</a>.</li>
-                    <li class="award-item">Training successfully 100+ students.</li>
+                <h3><a href="https://www.ensae.fr/en" target="_blank" rel="noopener">ENSAE</a> – Teaching Assistant</h3>
+                <p class="note">Honored in the top 1% of teachers for exceptional pedagogical quality.</p>
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what">Probability Theory</span>
+                        <span class="when">Spring 2024 &amp; 2023</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://vebrunel.fr/" target="_blank" rel="noopener">Victor-Emmanuel Brunel</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Measure Theory</span>
+                        <span class="when">Fall 2023 &amp; 2022</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://cbutucea.perso.math.cnrs.fr" target="_blank" rel="noopener">Cristina Butucea</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Optimization</span>
+                        <span class="when">Spring 2023 &amp; 2022</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://guillaume-lecue.faculty.essec.edu/" target="_blank" rel="noopener">Guillaume Lecué</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Statistical Learning</span>
+                        <span class="when">Fall 2022 &amp; 2021</span>
+                        <span class="detail">Graduate (M2) – Professor: <a href="https://cbutucea.perso.math.cnrs.fr" target="_blank" rel="noopener">Cristina Butucea</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Machine Learning</span>
+                        <span class="when">Spring 2022</span>
+                        <span class="detail">Graduate (M1) – Professor: <a href="https://www.ensae.fr/faculty/670-vianney-perchet" target="_blank" rel="noopener">Vianney Perchet</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Linear Algebra</span>
+                        <span class="when">Fall 2021</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://lerasle.perso.math.cnrs.fr/" target="_blank" rel="noopener">Mathieu Lerasle</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Numerical Methods</span>
+                        <span class="when">Spring 2021</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://www.ljll.fr/membre/kaber-sidi-mahmoud/" target="_blank" rel="noopener">Sidi Mahmoud Kaber</a></span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">Introduction to Statistics</span>
+                        <span class="when">Spring 2021</span>
+                        <span class="detail">Undergraduate (L3) – Professor: <a href="https://www.ensae.fr/en/courses/475" target="_blank" rel="noopener">Mathieu Lerasle</a></span>
+                    </li>
                 </ul>
-            </section>
 
-            <section id="grants" class="section fade-in">
-                <h2>Grants, Talks & Conferences</h2>
-                
+                <h3><a href="https://nayelbettache.wixsite.com/nayelprepa" target="_blank" rel="noopener">Nayel Prepa</a> – Founder</h3>
+                <p class="note">Received a stellar 100% 5-star rating on <a href="https://fr.trustpilot.com/review/nayelprepa.fr" target="_blank" rel="noopener">Trustpilot</a>.</p>
+                <ul class="bullets">
+                    <li>Founding a company democratising access to high-quality mathematics education for undergraduate students.</li>
+                    <li>Publishing 80 videos, garnered 7.5k subscribers and amassed over 315k views on <a href="https://www.youtube.com/@nayelprepa" target="_blank" rel="noopener">YouTube</a>.</li>
+                    <li>Training successfully 100+ students.</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Grants, talks and conferences -->
+        <section id="grants" class="row">
+            <h2>Grants, Talks &amp; Conferences</h2>
+            <div class="body">
                 <h3>Grants</h3>
-                <ul>
-                    <li class="award-item"><strong>Junior Scientific Visibility</strong>: Fondation Mathématique Jacques Hadamard, 2023 (2300€).</li>
-                    <li class="award-item"><strong>PhD Grant</strong>: Genes, 2021-2024 (100k€).</li>
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what">Junior Scientific Visibility</span>
+                        <span class="when">2023</span>
+                        <span class="detail">Fondation Mathématique Jacques Hadamard (2300€)</span>
+                    </li>
+                    <li class="entry">
+                        <span class="what">PhD Grant</span>
+                        <span class="when">2021–2024</span>
+                        <span class="detail">Genes (100k€)</span>
+                    </li>
                 </ul>
 
                 <h3>Talks</h3>
-                <ul>
-                    <li><strong>PhD Defense</strong>, Palaiseau (France), July 2024.</li>
-                    <li><strong> <a href="https://ems2023.org/sites/default/files/BoA_1.pdf" target="_blank"> European Meeting of Statisticians </a></strong>, Warsaw (Poland), July 2023.</li>
-                    <li><strong> <a href="https://statistics.fas.harvard.edu/stat-300" target="_blank">Harvard Stat 300 Seminar</a></strong>, Harvard University, Cambridge (MA, USA), May 2023.</li>
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what">PhD Defense</span>
+                        <span class="when">July 2024</span>
+                        <span class="detail">Palaiseau (France)</span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="https://ems2023.org/sites/default/files/BoA_1.pdf" target="_blank" rel="noopener">European Meeting of Statisticians</a></span>
+                        <span class="when">July 2023</span>
+                        <span class="detail">Warsaw (Poland)</span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="https://statistics.fas.harvard.edu/stat-300" target="_blank" rel="noopener">Harvard Stat 300 Seminar</a></span>
+                        <span class="when">May 2023</span>
+                        <span class="detail">Harvard University, Cambridge (MA, USA)</span>
+                    </li>
                 </ul>
 
                 <h3>International Conferences</h3>
-                <ul>
-                    <li><strong><a href="https://conferences.cirm-math.fr/3055.html" target="_blank">Meeting in Mathematical Statistics</a></strong>, Luminy (France), December 2024.</li>
-                    <li><strong><a href="https://publications.mfo.de/bitstream/handle/mfo/4225/OWR_2024_30.pdf?sequence=1&isAllowed=y" target="_blank"> Statistics and Learning Theory in the Era of Artificial Intelligence</a> </strong>, Oberwolfach (Germany), June 2024.</li>
-                    <li><strong><a href="https://fan60.princeton.edu/" target="_blank">Jianqing Fan's 60th Birthday Celebration</a></strong>, Princeton (NJ, USA), May 2023.</li>
+                <ul class="entries">
+                    <li class="entry">
+                        <span class="what"><a href="https://conferences.cirm-math.fr/3055.html" target="_blank" rel="noopener">Meeting in Mathematical Statistics</a></span>
+                        <span class="when">December 2024</span>
+                        <span class="detail">Luminy (France)</span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="https://publications.mfo.de/bitstream/handle/mfo/4225/OWR_2024_30.pdf?sequence=1&isAllowed=y" target="_blank" rel="noopener">Statistics and Learning Theory in the Era of Artificial Intelligence</a></span>
+                        <span class="when">June 2024</span>
+                        <span class="detail">Oberwolfach (Germany)</span>
+                    </li>
+                    <li class="entry">
+                        <span class="what"><a href="https://fan60.princeton.edu/" target="_blank" rel="noopener">Jianqing Fan's 60th Birthday Celebration</a></span>
+                        <span class="when">May 2023</span>
+                        <span class="detail">Princeton (NJ, USA)</span>
+                    </li>
                 </ul>
-            </section>
-
-            <div style="text-align: center; margin: 40px 0;">
-                <a href="documents/CV_Bettache_Nayel_Mar25.pdf" class="download-btn" target="_blank">Download Curriculum Vitae</a>
             </div>
-        </div>
+        </section>
     </main>
 
-    <!-- Footer -->
     <footer class="footer">
-        <div class="container">
+        <div class="page">
             <p>&copy; 2025 Nayel Bettache. All rights reserved.</p>
         </div>
     </footer>
 
-    <script>
-        function toggleNav() {
-            const navList = document.getElementById('navList');
-            navList.classList.toggle('active');
-        }
-
-        // Close mobile nav when clicking on a link
-        document.querySelectorAll('.nav-list a').forEach(link => {
-            link.addEventListener('click', () => {
-                document.getElementById('navList').classList.remove('active');
-            });
-        });
-
-        // Close mobile nav when clicking outside
-        document.addEventListener('click', (e) => {
-            const navList = document.getElementById('navList');
-            const toggleBtn = document.querySelector('.mobile-nav-toggle');
-            
-            if (!navList.contains(e.target) && !toggleBtn.contains(e.target)) {
-                navList.classList.remove('active');
-            }
-        });
-
-        // Add fade-in animation on scroll
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('fade-in');
-                }
-            });
-        }, observerOptions);
-
-        document.querySelectorAll('.section').forEach(section => {
-            observer.observe(section);
-        });
-    </script>
+    <script src="javascripts/site.js"></script>
 </body>
 </html>
